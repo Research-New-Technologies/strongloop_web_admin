@@ -1,0 +1,19 @@
+<div class="row login-container" align="center">
+    <div class="col">
+        <form class="login-form">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" ng-model="user.email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" ng-model="user.password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+          </div>
+            
+          <div align="center">
+              <button type="submit" class="btn btn-default btn-login" ng-click="login(user)">Login</button>
+              <a href="" ng-click="forgot_password()">Forgot password?</a> or <a href="" ng-click="sign_up()">Sign Up</a>
+          </div>
+        </form>
+    </div>
+</div>

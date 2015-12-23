@@ -1,1 +1,1 @@
-angular.module('app', ['lbServices', 'ui.router']);
+angular.module('app', ['lbServices', 'ui.router', 'ngRoute']);

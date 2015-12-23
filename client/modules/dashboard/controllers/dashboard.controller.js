@@ -1,0 +1,4 @@
+angular.module('app')
+.controller('DashboardController', function(){
+    alert();
+})

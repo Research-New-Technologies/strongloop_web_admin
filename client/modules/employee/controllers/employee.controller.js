@@ -1,6 +1,6 @@
 angular.module('app')
 .controller('EmployeeController', function($scope, Employee){
-   
+   alert();
    $scope.create = function(employee){
        Employee.create(employee);
    }
