@@ -7,10 +7,10 @@
   Download Nodejs and install it to your machine. Visit this [link] (https://nodejs.org/en/download/) to download Nodejs based on your environment.
 - <b>Bower</b><br>
   Install Bower into your machine with run bellow command:<br>
-  npm install bower<br>
+  $ npm install bower<br>
 - <b>Strongloop</b><br>
   Run the following command in your terminal:
-  $ npm install -g strongloop
+  $ npm install -g strongloop<br>
   *If your environment is windows, please visit this [link](https://docs.strongloop.com/display/SL/Installing+on+Windows) to see step by step how to install Strongloop. Also, add addional command "--unsafe-perm" when install strongloop. ($ npm install -g strongloop --unsafe-perm)<br>
 
 <b>Troubleshooting</b>
