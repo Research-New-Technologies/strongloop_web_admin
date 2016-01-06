@@ -25,6 +25,8 @@
     "Ionicons": "ionicons#~2.0.1",
     "raphael": "~2.1.4",
     "moment": "~2.10.6",
-    "angular-route": "~1.4.8"
+    "angular-route": "~1.4.8",
+    "angular-loading-bar": "~0.8.0",
+    "angular-animate": "~1.4.8"
   }
 }

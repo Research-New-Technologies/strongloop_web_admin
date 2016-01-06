@@ -1,10 +1,12 @@
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 var nodemailer = require('nodemailer');
+
 var app = module.exports = loopback();
 app.start = function () {
     // start the web server
     return app.listen(function () {
+        app.set('view engine', 'ejs');
         app.emit('started');
         var baseUrl = app.get('url').replace(/\/$/, '');
         console.log('Web server listening at: %s', baseUrl);

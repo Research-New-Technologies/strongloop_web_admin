@@ -2,20 +2,26 @@
   "db": {
     "name": "db",
     "connector": "memory"
-    },
-    "emailDs": {
+  },
+  "mongodb": {
+    "database": "web_admin_template",
+    "name": "mongodb",
+    "connector": "mongodb"
+  },
+  "emailDs": {
     "name": "emailDs",
     "connector": "mail",
-    "transports": [{
-        "type":"smtp",
-      "host": "smtp.gmail.com",
-      "secureConnection": false,
-    "port": 587,
-      "auth": {
-        "user": "email",
-        "pass": "password"
+    "transports": [
+      {
+        "type": "smtp",
+        "host": "smtp.gmail.com",
+        "secureConnection": false,
+        "port": 587,
+        "auth": {
+          "user": "email",
+          "pass": "password"
+        }
       }
-    }]
+    ]
   }
-
 }

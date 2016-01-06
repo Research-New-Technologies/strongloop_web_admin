@@ -14,29 +14,37 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "mongodb",
+    "public": true
   },
   "AccessToken": {
-    "dataSource": "db",
-    "public": false
+    "dataSource": "mongodb",
+    "public": true
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": false
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": false
   },
   "Employee": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
     "public": true
   },
-    "Email": {
+  "Email": {
     "dataSource": "emailDs"
+  },
+  "member": {
+    "dataSource": "mongodb",
+    "public": true,
+    "options": {
+      "emailVerificationRequired": true
+    }
   }
 }

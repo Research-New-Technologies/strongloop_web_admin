@@ -1,9 +1,9 @@
 angular.module('app')
-    .controller('LoginController', function ($scope, User, $state, $rootScope, LoopBackAuth) {
-
+    .controller('LoginController', function ($scope, Member, $state, $rootScope, LoopBackAuth, cfpLoadingBar) {
+        $scope.user = {};
         // find by id
         $scope.find_by_id = function (id) {
-            User.findById({ id: id }, function (user) {
+            Member.findById({ id: id }, function (user) {
                 window.localStorage.setItem('EMAIL', user.email);
                 window.localStorage.setItem('USER_NAME', user.username);
                 window.localStorage.setItem('FIRST_NAME', user.first_name);
@@ -14,21 +14,36 @@ angular.module('app')
         }
         
         // login with email & password
-        $scope.login = function (user) {
-            User.login(user, function (response) {
-                console.log(response)
-                $rootScope.is_authenticated = true;
-                window.localStorage.setItem('IS_AUTHENTICATED', true);
-                window.localStorage.setItem('USER_ID', response.userId);
-                window.localStorage.setItem('TOKEN', response.id);
-                $scope.find_by_id(response.userId);
-            })
+        $scope.login = function () {
+            cfpLoadingBar.start()
+            if (!$scope.loginForm.email.$invalid && !$scope.loginForm.password.$invalid) {
+                Member.login($scope.user, function (response) {
+                    $rootScope.is_authenticated = true;
+                    window.localStorage.setItem('IS_AUTHENTICATED', true);
+                    window.localStorage.setItem('USER_ID', response.userId);
+                    window.localStorage.setItem('TOKEN', response.id);
+                    $scope.find_by_id(response.userId);
+                    cfpLoadingBar.complete()
+                }, function (response) {
+                    cfpLoadingBar.complete()
+                    alert(response.data.error.message)
+                })
+            }
+            else {
+                if (!$scope.loginForm.email.$dirty) {
+                    $scope.loginForm.email.$dirty = true;
+                }
+                if (!$scope.loginForm.password.$dirty) {
+                    $scope.loginForm.password.$dirty = true;
+                }
+                cfpLoadingBar.complete()
+            }
         }
 
         // signout
         $scope.sign_out = function () {
             console.log(LoopBackAuth)
-            var test = User.logout();
+            Member.logout();
             window.localStorage.clear();
             $rootScope.is_authenticated = false;
             $rootScope.username = "";

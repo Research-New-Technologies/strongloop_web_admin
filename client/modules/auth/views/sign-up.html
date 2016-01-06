@@ -1,29 +1,41 @@
 <div class="row signup-container" align="center">
     <div class="col">
-        <form class="signup-form">
+        <form class="signup-form" name="signUpForm" novalidate>
           <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" ng-model="user.email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+            <label>Email address</label>
+            <input type="email" ng-model="user.email" class="form-control" name="email" placeholder="Email" required>
+            <span ng-show="signUpForm.email.$invalid && signUpForm.email.$dirty" class="error-color">Please valid email</span>
           </div>
           <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" ng-model="user.password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            <label>Password</label>
+            <input type="password" name="password" ng-model="user.password" class="form-control" placeholder="Password" required>
+            <span ng-show="signUpForm.password.$invalid && signUpForm.password.$dirty" class="error-color">Please input password</span>
           </div>
           <div class="form-group">
-            <label for="exampleInputUsername">Username</label>
-            <input type="text" ng-model="user.username" class="form-control" id="exampleInputUsername" placeholder="Username">
+            <label>Password Confirmation</label>
+            <input type="password" name="password_confirmation" ng-model="user.password_confirmation" class="form-control" placeholder="Password" required>
+            <span ng-show="user.password_confirmation != user.password && signUpForm.password_confirmation.$dirty" class="error-color">Password doesn't match</span>
           </div>
           <div class="form-group">
-            <label for="exampleInputFirstName">First Name</label>
-            <input type="text" ng-model="user.first_name" class="form-control" id="exampleInputFirstName" placeholder="First Name">
+            <label>Username</label>
+            <input type="text" name="username" ng-model="user.username" class="form-control" placeholder="Username" required>
+            <span ng-show="signUpForm.username.$invalid && signUpForm.username.$dirty" class="error-color">Please input username</span>
           </div>
           <div class="form-group">
-            <label for="exampleInputLastName">Last Name</label>
-            <input type="text" ng-model="user.last_name" class="form-control" id="exampleInputLastName" placeholder="Last Name">
+            <label>First Name</label>
+            <input type="text" name="first_name" ng-model="user.first_name" class="form-control" placeholder="First Name" required>
+            <span ng-show="signUpForm.first_name.$invalid && signUpForm.first_name.$dirty" class="error-color">Please input first name</span>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" ng-model="user.last_name" class="form-control" placeholder="Last Name">
           </div>
            
           <div align="center">
               <button type="submit" class="btn btn-default btn-login" ng-click="sign_up(user)">Sign Up</button>
+          </div>
+          <div align="center">
+              <a href="/#/login">Login</a> or <a href="/#/forgot-password">Forgot Password</a>
           </div>
         </form>
     </div>
