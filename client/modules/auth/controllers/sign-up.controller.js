@@ -13,18 +13,12 @@ angular.module('app')
                 $scope.signUpForm.first_name.$dirty = true;
             }
             else {
-                  Member.create(user, function (user) {
+                var user_send_to_server = {};
+                angular.copy(user, user_send_to_server)
+                delete user_send_to_server.password_confirmation;
+                  Member.create(user_send_to_server, function (user) {
                 alert("We've sent an email confirmation to your email. Please check your email to confirm the registration proccess")
-            //      Member.login(user, function (response) {
-            //     $rootScope.is_authenticated = true;
-            //     window.localStorage.setItem('EMAIL', user.email);
-            //     window.localStorage.setItem('USER_NAME', user.username);
-            //     window.localStorage.setItem('FIRST_NAME', user.first_name);
-            //     window.localStorage.setItem('IS_AUTHENTICATED', true);
-            //     window.localStorage.setItem('USER_ID', response.userId);
-            //     window.localStorage.setItem('TOKEN', response.id);
-            //     $state.go('dashboard');
-            // })
+                
                 $state.go('login');
             }, function (error) {
                 alert("Email or username has used by other user")

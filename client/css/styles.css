@@ -40,3 +40,23 @@
 .error-color {
     color:red;
 }
+.col-fixed {
+    max-width:120px!important;
+    margin:10px!important;
+}
+.margin-15 {
+    margin:0 10px 0 10px;
+}
+
+th,tr {
+    text-align: center;
+}
+.btn-delete {
+    width: 100%;
+    margin-bottom:10px;
+    color:white!important;
+    background-color: red!important;
+}
+.modal {
+    display: block;
+}

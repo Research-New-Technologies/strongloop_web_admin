@@ -1,0 +1,28 @@
+{
+  "name": "roleMember",
+  "base": "Role",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+   "relations": {
+    "members": {
+      "type": "hasMany",
+      "model": "member",
+      "foreignKey":"roleId",
+      "through": "roleMappingMember"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "model": "roleMember"
+    }
+  ],
+  "methods": {}
+}

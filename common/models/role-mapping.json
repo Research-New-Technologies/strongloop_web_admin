@@ -1,0 +1,33 @@
+{
+  "name": "roleMappingMember",
+  "base": "RoleMapping",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "member": {
+      "type": "belongsTo",
+      "model": "member",
+      "foreignKey":"memberId"
+    },
+    "role": {
+      "type": "belongsTo",
+      "model": "roleMember",
+      "foreignKey":"roleId"
+      
+    }
+  },
+  "acls": [
+       {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "model": "roleMappingMember"
+    }
+  ],
+  "methods": {}
+}

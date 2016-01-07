@@ -27,11 +27,11 @@
   },
   "RoleMapping": {
     "dataSource": "mongodb",
-    "public": false
+    "public": true
   },
   "Role": {
     "dataSource": "mongodb",
-    "public": false
+    "public": true
   },
   "Employee": {
     "dataSource": "mongodb",
@@ -46,5 +46,13 @@
     "options": {
       "emailVerificationRequired": true
     }
+  },
+  "roleMember": {
+    "dataSource": "mongodb",
+    "public": true
+  },
+  "roleMappingMember": {
+    "dataSource": "mongodb",
+    "public": true
   }
 }
