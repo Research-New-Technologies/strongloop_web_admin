@@ -1,19 +1,25 @@
 angular.module('app')
-    .controller('DashboardController', function ($scope, $state, $rootScope, $route, $timeout, $modal, Member, Role) {
+    .controller('DashboardController', function ($scope, $state, $rootScope,$window, $route,Dashboard, $timeout, $modal, Member, Role) {
         $scope.users = {};
-
+        
         $scope.getAllUser = function () {
-            $scope.users = [];
-            Member.find({ filter: { include: { relation: 'roleMappingMembers', scope: { include: { relation: 'role' } } } } }, function (response) {
+            Dashboard.getAllUsers().then(function(response){
                 $scope.users = response;
-            }, function (err) {
-                alert("please re-login to view dashboard");
-                Member.logout();
-                window.localStorage.clear();
-                $rootScope.is_authenticated = false;
-                $rootScope.username = "";
-                $state.go("login")
-            });
+                   
+            },function(response){
+                console.log(response)
+            })
+            // $scope.users = [];
+            // Member.find({ filter: { include: { relation: 'roleMappingMembers', scope: { include: { relation: 'role' } } } } }, function (response) {
+            //     $scope.users = response;
+            // }, function (err) {
+            //     alert("please re-login to view dashboard");
+            //     Member.logout();
+            //     window.localStorage.clear();
+            //     $rootScope.is_authenticated = false;
+            //     $rootScope.username = "";
+            //     $state.go("login")
+            // });
 
 
         }
@@ -62,9 +68,11 @@ angular.module('app')
                     alert("Successfully add a new user");
                     $scope.getAllUser();
                     $scope.modalInstance.close();
+                     $window.location.reload();
                 }, function (response) {
                     alert(JSON.stringify(response.data.error.message))
                 });
+           
             }
         }
 
@@ -73,8 +81,9 @@ angular.module('app')
                 $scope.users = [];
                 alert("Successfully delete the user")
                 $scope.modalInstance.close();
-
+             
                 $scope.getAllUser();
+                $window.location.reload();
             }, function (response) {
                 alert(JSON.stringify(response))
             })
@@ -85,6 +94,7 @@ angular.module('app')
                 alert("Successfully update the user")
                 $scope.modalInstance.close();
                 $scope.getAllUser();
+                $window.location.reload();
             },
                 function (response) {
                     alert(JSON.stringify(response))
