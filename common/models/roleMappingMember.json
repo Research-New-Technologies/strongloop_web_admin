@@ -1,18 +1,22 @@
 {
-  "name": "roleMember",
-  "base": "Role",
+  "name": "roleMappingMember",
+  "base": "RoleMapping",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {},
   "validations": [],
-   "relations": {
-    "members": {
-      "type": "hasMany",
+  "relations": {
+    "member": {
+      "type": "belongsTo",
       "model": "member",
-      "foreignKey":"roleId",
-      "through": "roleMappingMember"
+      "foreignKey": "memberId"
+    },
+    "role": {
+      "type": "belongsTo",
+      "model": "roleMember",
+      "foreignKey": "roleId"
     }
   },
   "acls": [
@@ -21,7 +25,7 @@
       "principalType": "ROLE",
       "principalId": "admin",
       "permission": "ALLOW",
-      "model": "roleMember"
+      "model": "roleMappingMember"
     }
   ],
   "methods": {}

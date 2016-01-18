@@ -21,7 +21,7 @@ angular.module('app')
                 
                 $state.go('login');
             }, function (error) {
-                alert("Email or username has used by other user")
+                alert("Email or username has used by other user"+JSON.stringify(error))
             });
             } 
         }

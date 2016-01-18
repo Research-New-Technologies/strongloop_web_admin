@@ -1,5 +1,5 @@
 angular.module('app')
-  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider, $rootScope) {
     $stateProvider
       .state('employee', {
         url: '/employee',
@@ -29,8 +29,31 @@ angular.module('app')
       .state('dashboard', {
         url: '/dashboard',
         templateUrl: 'modules/dashboard/views/dashboard.html',
-        controller: 'DashboardController'
-      });
+        controller: 'DashboardController',
+        isAuthenticatedView:true
+      })
+      .state('order', {
+        url: '/order',
+        templateUrl: 'modules/order/views/order.html',
+        controller: 'OrderController',
+        isAuthenticatedView:true
+      })
+      ;
 
     $urlRouterProvider.otherwise('login');
-  }]);
+  
+
+    
+  }])
+  .run(function($rootScope, $state){
+         
+    $rootScope.$on("$stateChangeStart", function (event, next, next_state, prev, prev_state) {
+        if(next.isAuthenticatedView){
+            var token  = window.localStorage.getItem('TOKEN');
+            if (!token){
+                event.preventDefault();
+                $state.go('login');
+            }
+        }
+    });
+  });

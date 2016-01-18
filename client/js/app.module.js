@@ -1,1 +1,1 @@
-angular.module('app', ['lbServices', 'ui.router', 'ngRoute', 'angular-loading-bar', 'ngAnimate', 'ui.bootstrap']);
+angular.module('app', ['lbServices', 'ui.router', 'ngRoute', 'angular-loading-bar', 'ngAnimate', 'ui.bootstrap', 'infinite-scroll']);

@@ -9,6 +9,7 @@
   "dependencies": {
     "compression": "^1.0.3",
     "cors": "^2.5.2",
+    "email-existence": "^0.1.5",
     "loopback": "^2.22.0",
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^2.1.0",
@@ -17,7 +18,8 @@
     "nodemailer": "^1.10.0",
     "nodemailer-smtp-pool": "^1.1.6",
     "nodemailer-wellknown": "^0.1.7",
-    "serve-favicon": "^2.0.1"
+    "serve-favicon": "^2.0.1",
+    "smtp-protocol": "^2.4.6"
   },
   "devDependencies": {
     "jshint": "^2.5.6"

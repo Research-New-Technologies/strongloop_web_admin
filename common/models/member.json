@@ -5,65 +5,32 @@
   "options": {
     "validateUpsert": true
   },
-  "mixins": {
-    "ClearBaseAcls": true
-  },
   "properties": {},
   "validations": [],
   "relations": {
     "roleMembers": {
       "type": "hasMany",
       "model": "roleMember",
-      "foreignKey":"memberId",
-      "through":"roleMappingMember"
+      "foreignKey": "memberId",
+      "through": "roleMappingMember"
     },
     "roleMappingMembers": {
       "type": "hasMany",
-      "foreignKey":"memberId",
-      "model": "roleMappingMember"
+      "model": "roleMappingMember",
+      "foreignKey": "memberId"
+    },
+    "orders": {
+      "type": "hasMany",
+      "model": "order",
+      "foreignKey": "memberId"
     }
   },
   "acls": [
     {
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "permission": "ALLOW"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "create"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "deleteById"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "login"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "logout"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "findById"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "updateAttributes"
     },
     {
       "principalType": "ROLE",
@@ -73,23 +40,15 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "$owner",
       "permission": "ALLOW",
-      "property": "accessTokens"
+      "property": "updateAttributes"
     },
     {
-      "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "admin",
       "permission": "ALLOW",
-      "property": "find",
-      "model": "member"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "permission": "ALLOW"
+      "property": "*"
     }
   ],
   "methods": {}
