@@ -4,6 +4,7 @@ module.exports = function (Member) {
     var appRoot = require('../../server/server');
     //send verification email after registration
     Member.afterRemote('create', function (context, user, next) {
+
         var options = {
             type: 'email',
             to: user.email,
@@ -17,7 +18,7 @@ module.exports = function (Member) {
             if (err) return next(err);
             next();
         });
-        
+
         next();
     });
 
@@ -54,87 +55,99 @@ module.exports = function (Member) {
 
     //check whether the request is from Admin or unauthenticated member.
     Member.beforeRemote('create', function (context, user, next) {
-        //define object model
-        var AccessToken = appRoot.models.AccessToken;
-        var RoleMember = appRoot.models.roleMember;
-        var RoleMapping = appRoot.models.RoleMappingMember;
+        if (typeof (context.req.body.username) == 'undefined') {
+            var error = new Error();
+            error.name = 'BAD_REQUEST'
+            error.status = 400;
+            error.message = 'Username is empty';
+            error.code = 'USERNAME_IS_EMPTY';
+            return next(error)
+        }
+        else {
+            //define object model
+            var AccessToken = appRoot.models.AccessToken;
+            var RoleMember = appRoot.models.roleMember;
+            var RoleMapping = appRoot.models.RoleMappingMember;
         
-        //check whether access token is valid or not
-        AccessToken.findForRequest(context.req, {}, function (aux, accessToken) {
+            //check whether access token is valid or not
+            AccessToken.findForRequest(context.req, {}, function (aux, accessToken) {
           
-            //request is from unauthenticated member
-            if (typeof(accessToken) == 'undefined') {
-                  console.log(context.req)
-                next();
-            }
+                //request is from unauthenticated member
+                if (typeof (accessToken) == 'undefined') {
+                    console.log(context.req)
+                    next();
+                }
             
-            //request is from authenticated member
-            else {
-                //retrive role admin object
-                RoleMember.find({ where: { name: 'admin' } }, function (err, role) {
-                    var role_admin = role[0];
+                //request is from authenticated member
+                else {
+                    //retrive role admin object
+                    RoleMember.find({ where: { name: 'admin' } }, function (err, role) {
+                        var role_admin = role[0];
 
-                    //check whether there is role mapping from memberId and role admin id
-                    RoleMapping.find({ where: { memberId: context.req.accessToken.userId, roleId: role_admin.id } }, function (err, roleMapping) {
-                        //if the request from admin user
-                        if (roleMapping.length > 0) {
-                            var userRequest = context.req.body;
-                            userRequest.emailVerified = false;
+                        //check whether there is role mapping from memberId and role admin id
+                        RoleMapping.find({ where: { memberId: context.req.accessToken.userId, roleId: role_admin.id } }, function (err, roleMapping) {
+                            //if the request from admin user
+                            if (roleMapping.length > 0) {
+                                var userRequest = context.req.body;
+                                userRequest.emailVerified = false;
                             
-                            //create a new admin member
-                            role_admin.members.create(userRequest, function (err, admin) {
-                                //error occured when create a new admin
-                                if (err) {
-                                    var error = new Error();
-                                    error.name = 'CONFLICT'
-                                    error.status = 409;
-                                    error.message = 'Email or Username already exist';
-                                    error.code = 'EMAIL_USERNAME_EXIST';
-                                    next(error)
-                                }
+                                //create a new admin member
+                                role_admin.members.create(userRequest, function (err, admin) {
+                                    //error occured when create a new admin
+                                    if (err) {
+                                        var error = new Error();
+                                        error.name = 'CONFLICT'
+                                        error.status = 409;
+                                        error.message = 'Email or Username already exist';
+                                        error.code = 'EMAIL_USERNAME_EXIST';
+                                        next(error)
+                                    }
                                 
-                                //successfully create a new admin
-                                else {
+                                    //successfully create a new admin
+                                    else {
                                     
-                                    //create a token
-                                    var tokenGenerator = Member.generateVerificationToken;
-                                    tokenGenerator(admin, function (err, token) {
-                                        if (err) { }
-                                        else {
-                                            admin.verificationToken = token;
-                                            admin.save(function (err) {
-                                            });
-                                        }
+                                        //create a token
+                                        var tokenGenerator = Member.generateVerificationToken;
+                                        tokenGenerator(admin, function (err, token) {
+                                            if (err) { }
+                                            else {
+                                                admin.verificationToken = token;
+                                                admin.save(function (err) {
+                                                });
+                                            }
                                         
-                                        //add adminId and roleId into RoleMapping
-                                        RoleMapping.find({ where: { roleId: role.id, memberId: admin.id } }, function (err, roleMapping) {
-                                            roleMapping[0].principalType = RoleMapping.USER,
-                                            roleMapping[0].principalId = admin.id;
-                                            roleMapping[0].save(function (err) {
-                                                if (err) {
+                                            //add adminId and roleId into RoleMapping
+                                            RoleMapping.find({ where: { roleId: role.id, memberId: admin.id } }, function (err, roleMapping) {
+                                                roleMapping[0].principalType = RoleMapping.USER,
+                                                roleMapping[0].principalId = admin.id;
+                                                roleMapping[0].save(function (err) {
+                                                    if (err) {
 
-                                                }
-                                                else {
-                                                    return context.res.sendStatus(202);
-                                                }
-                                            });
-                                        })
-                                    });
-                                }
-                            });
-                        }
+                                                    }
+                                                    else {
+                                                        return context.res.sendStatus(202);
+                                                    }
+                                                });
+                                            })
+                                        });
+                                    }
+                                });
+                            }
                         
-                        //role mapping with adminId and roleId Admin not found
-                        else {
-                            next();
-                        }
+                            //role mapping with adminId and roleId Admin not found
+                            else {
+                                next();
+                            }
+                        })
                     })
+                }
+            },
+                function (error) {
+                    console.log(error)
                 })
-            }
-        },
-            function (error) {
-                console.log(error)
-            })
+        }
+
+
     })
     
   
