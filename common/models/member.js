@@ -2,9 +2,23 @@ module.exports = function (Member) {
     var loopback = require('../../node_modules/loopback/lib/loopback');
     var app = Member.app;
     var appRoot = require('../../server/server');
+    
+
     //send verification email after registration
     Member.afterRemote('create', function (context, user, next) {
+        //define object model
+        var RoleMember = appRoot.models.roleMember;
+        var RoleMapping = appRoot.models.RoleMappingMember;
 
+        //retrive role admin object
+        RoleMember.find({ where: { name: 'member' } }, function (err, role) {
+            var role_member = role[0];
+            console.log(role_member)     
+            //create a new admin member
+            RoleMapping.create({ principalType: 'USER', principalId: user.id, roleId: role_member.id, memberId: user.id }, function (err, member) {
+                next();
+            })
+        })
         var options = {
             type: 'email',
             to: user.email,
@@ -19,7 +33,7 @@ module.exports = function (Member) {
             next();
         });
 
-        next();
+
     });
 
     //send error response when login proccess is failed
