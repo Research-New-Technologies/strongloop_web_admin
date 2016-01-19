@@ -11,11 +11,11 @@ angular.module('app')
         templateUrl: 'modules/auth/views/login.html',
         controller: 'LoginController'
       })
-      .state('sign-up', {
-        url: '/sign-up',
-        templateUrl: 'modules/auth/views/sign-up.html',
-        controller: 'SignUpController'
-      })
+    //   .state('sign-up', {
+    //     url: '/sign-up',
+    //     templateUrl: 'modules/auth/views/sign-up.html',
+    //     controller: 'SignUpController'
+    //   })
       .state('forgot-password', {
         url: '/forgot-password',
         templateUrl: 'modules/auth/views/forgot-password.html',
@@ -38,7 +38,15 @@ angular.module('app')
         controller: 'OrderController',
         isAuthenticatedView:true
       })
-      ;
+      .state('confirmation', {
+        url: '/confirmation',
+        templateUrl: 'modules/auth/views/confirmation.html',
+        controller: 'ConfirmationController'
+      })
+      .state('member-confirm-error', {
+        url: '/member-confirm-error',
+        templateUrl: 'modules/auth/views/member-confirm-error.html'
+      });
 
     $urlRouterProvider.otherwise('login');
   
@@ -54,6 +62,9 @@ angular.module('app')
                 event.preventDefault();
                 $state.go('login');
             }
+        }
+        else {
+             window.localStorage.clear();
         }
     });
   });

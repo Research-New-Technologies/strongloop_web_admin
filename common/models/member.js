@@ -1,9 +1,7 @@
 module.exports = function (Member) {
     var loopback = require('../../node_modules/loopback/lib/loopback');
-    var app = Member.app;
     var appRoot = require('../../server/server');
     
-
     //send verification email after registration
     Member.afterRemote('create', function (context, user, next) {
         //define object model
@@ -13,7 +11,6 @@ module.exports = function (Member) {
         //retrive role admin object
         RoleMember.find({ where: { name: 'member' } }, function (err, role) {
             var role_member = role[0];
-            console.log(role_member)     
             //create a new admin member
             RoleMapping.create({ principalType: 'USER', principalId: user.id, roleId: role_member.id, memberId: user.id }, function (err, member) {
                 next();
@@ -24,17 +21,20 @@ module.exports = function (Member) {
             to: user.email,
             from: 'noreply@loopback.com',
             subject: 'Thanks for registering.',
-            redirect: '/',
+            redirect: '/#/confirmation',
             user: user,
         };
         user.verify(options, function (err, response) {
-            console.log(response)
             if (err) return next(err);
             next();
         });
-
-
     });
+
+    Member.afterRemoteError('confirm', function (context, member) {
+        context.res.redirect('/#/member-confirm-error');
+        context.res.end();
+
+    })
 
     //send error response when login proccess is failed
     Member.afterRemoteError('login', function (context, next) {
@@ -69,6 +69,9 @@ module.exports = function (Member) {
 
     //check whether the request is from Admin or unauthenticated member.
     Member.beforeRemote('create', function (context, user, next) {
+
+
+        context.req.body.created_date = new Date();
         if (typeof (context.req.body.username) == 'undefined') {
             var error = new Error();
             error.name = 'BAD_REQUEST'
@@ -78,87 +81,118 @@ module.exports = function (Member) {
             return next(error)
         }
         else {
-            //define object model
-            var AccessToken = appRoot.models.AccessToken;
-            var RoleMember = appRoot.models.roleMember;
-            var RoleMapping = appRoot.models.RoleMappingMember;
-        
-            //check whether access token is valid or not
-            AccessToken.findForRequest(context.req, {}, function (aux, accessToken) {
-          
-                //request is from unauthenticated member
-                if (typeof (accessToken) == 'undefined') {
-                    console.log(context.req)
-                    next();
-                }
-            
-                //request is from authenticated member
-                else {
-                    //retrive role admin object
-                    RoleMember.find({ where: { name: 'admin' } }, function (err, role) {
-                        var role_admin = role[0];
 
-                        //check whether there is role mapping from memberId and role admin id
-                        RoleMapping.find({ where: { memberId: context.req.accessToken.userId, roleId: role_admin.id } }, function (err, roleMapping) {
-                            //if the request from admin user
-                            if (roleMapping.length > 0) {
-                                var userRequest = context.req.body;
-                                userRequest.emailVerified = false;
+            Member.find({ where: { username: context.req.body.username, email: context.req.body.email } }, function (err, member) {
+                if (member.length == 1) {
+                    if (!member.emailVerified) {
+                        console.log(member[0].id)
+                        var created_time = member[0].created_date.getTime();
+                        var current_time = new Date().getTime();
+                        var time_range_in_minutes = (current_time - created_time) / 60000;
+                        if (time_range_in_minutes >= Member.app.settings.repeated_signup_interval) {
+                            Member.destroyById(member[0].id, function (err, response) {
+                                next();
+                            })
+                        }
+                        else {
+                            var error = new Error();
+                            error.name = '412'
+                            error.status = 400;
+                            error.message = 'Please sign up in next ' + (Math.round(Member.app.settings.repeated_signup_interval - time_range_in_minutes)) + ' minutes';
+                            error.code = 'RE_SIGNUP_ERROR';
+                            return next(error)
+
+                        }
+                    }
+                    else {
+                        next();
+                    }
+                }
+                else {
+                    //define object model
+                    var AccessToken = appRoot.models.AccessToken;
+                    var RoleMember = appRoot.models.roleMember;
+                    var RoleMapping = appRoot.models.RoleMappingMember;
+        
+                    //check whether access token is valid or not
+                    AccessToken.findForRequest(context.req, {}, function (aux, accessToken) {
+          
+                        //request is from unauthenticated member
+                        if (typeof (accessToken) == 'undefined') {
+                            next();
+                        }
+            
+                        //request is from authenticated member
+                        else {
+                            //retrive role admin object
+                            RoleMember.find({ where: { name: 'admin' } }, function (err, role) {
+                                var role_admin = role[0];
+
+                                //check whether there is role mapping from memberId and role admin id
+                                RoleMapping.find({ where: { memberId: context.req.accessToken.userId, roleId: role_admin.id } }, function (err, roleMapping) {
+                                    //if the request from admin user
+                                    if (roleMapping.length > 0) {
+                                        var userRequest = context.req.body;
+                                        userRequest.emailVerified = false;
                             
-                                //create a new admin member
-                                role_admin.members.create(userRequest, function (err, admin) {
-                                    //error occured when create a new admin
-                                    if (err) {
-                                        var error = new Error();
-                                        error.name = 'CONFLICT'
-                                        error.status = 409;
-                                        error.message = 'Email or Username already exist';
-                                        error.code = 'EMAIL_USERNAME_EXIST';
-                                        next(error)
-                                    }
+                                        //create a new admin member
+                                        role_admin.members.create(userRequest, function (err, admin) {
+                                            //error occured when create a new admin
+                                            if (err) {
+                                                var error = new Error();
+                                                error.name = 'CONFLICT'
+                                                error.status = 409;
+                                                error.message = 'Email or Username already exist';
+                                                error.code = 'EMAIL_USERNAME_EXIST';
+                                                next(error)
+                                            }
                                 
-                                    //successfully create a new admin
-                                    else {
-                                    
-                                        //create a token
-                                        var tokenGenerator = Member.generateVerificationToken;
-                                        tokenGenerator(admin, function (err, token) {
-                                            if (err) { }
+                                            //successfully create a new admin
                                             else {
-                                                admin.verificationToken = token;
-                                                admin.save(function (err) {
+                                    
+                                                //create a token
+                                                var tokenGenerator = Member.generateVerificationToken;
+                                                tokenGenerator(admin, function (err, token) {
+                                                    if (err) { }
+                                                    else {
+                                                        admin.verificationToken = token;
+                                                        admin.save(function (err) {
+                                                        });
+                                                    }
+                                        
+                                                    //add adminId and roleId into RoleMapping
+                                                    RoleMapping.find({ where: { roleId: role.id, memberId: admin.id } }, function (err, roleMapping) {
+                                                        roleMapping[0].principalType = RoleMapping.USER,
+                                                        roleMapping[0].principalId = admin.id;
+                                                        roleMapping[0].save(function (err) {
+                                                            if (err) {
+
+                                                            }
+                                                            else {
+                                                                return context.res.sendStatus(202);
+                                                            }
+                                                        });
+                                                    })
                                                 });
                                             }
-                                        
-                                            //add adminId and roleId into RoleMapping
-                                            RoleMapping.find({ where: { roleId: role.id, memberId: admin.id } }, function (err, roleMapping) {
-                                                roleMapping[0].principalType = RoleMapping.USER,
-                                                roleMapping[0].principalId = admin.id;
-                                                roleMapping[0].save(function (err) {
-                                                    if (err) {
-
-                                                    }
-                                                    else {
-                                                        return context.res.sendStatus(202);
-                                                    }
-                                                });
-                                            })
                                         });
                                     }
-                                });
-                            }
                         
-                            //role mapping with adminId and roleId Admin not found
-                            else {
-                                next();
-                            }
+                                    //role mapping with adminId and roleId Admin not found
+                                    else {
+                                        next();
+                                    }
+                                })
+                            })
+                        }
+                    },
+                        function (error) {
+                            console.log(error)
                         })
-                    })
                 }
-            },
-                function (error) {
-                    console.log(error)
-                })
+            })
+
+
         }
 
 
