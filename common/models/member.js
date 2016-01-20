@@ -96,15 +96,19 @@ module.exports = function (Member) {
                         var current_time = new Date().getTime();
                         var time_range_in_minutes = (current_time - created_time) / 60000;
                         if (time_range_in_minutes >= Member.app.settings.repeated_signup_interval) {
-                            Member.destroyById(member[0].id, function (err, response) {
+                            Member.destroyById(member[0].__data.id, function (err, response) {
                                 next();
                             })
                         }
                         else {
+                            var interval = (Math.round(Member.app.settings.repeated_signup_interval - time_range_in_minutes));
+                            if(interval == 0){
+                                interval = 1;
+                            }
                             var error = new Error();
                             error.name = '412'
                             error.status = 400;
-                            error.message = 'Please sign up in next ' + (Math.round(Member.app.settings.repeated_signup_interval - time_range_in_minutes)) + ' minutes';
+                            error.message = 'Please sign up in next ' + interval + ' minutes';
                             error.code = 'RE_SIGNUP_ERROR';
                             return next(error)
 
