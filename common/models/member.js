@@ -1,18 +1,15 @@
 module.exports = function (Member) {
     var loopback = require('../../node_modules/loopback/lib/loopback');
     var appRoot = require('../../server/server');
-    
+    var RoleMember = appRoot.models.roleMember;
+    var RoleMapping = appRoot.models.RoleMappingMember;
     //send verification email after registration
     Member.afterRemote('create', function (context, user, next) {
-        //define object model
-        var RoleMember = appRoot.models.roleMember;
-        var RoleMapping = appRoot.models.RoleMappingMember;
-
         //retrive role admin object
-        RoleMember.find({ where: { name: 'member' } }, function (err, role) {
+        appRoot.models.roleMember.find({ where: { name: 'member' } }, function (err, role) {
             var role_member = role[0];
             //create a new admin member
-            RoleMapping.create({ principalType: 'USER', principalId: user.id, roleId: role_member.id, memberId: user.id }, function (err, member) {
+            appRoot.models.RoleMappingMember.create({ principalType: 'USER', principalId: user.id, roleId: role_member.id, memberId: user.id }, function (err, member) {
 
 
                 var options = {
@@ -89,20 +86,26 @@ module.exports = function (Member) {
         }
         else {
 
-            Member.find({ where: { username: context.req.body.username, email: context.req.body.email } }, function (err, member) {
-                if (member.length == 1) {
-                    if (!member.emailVerified) {
-                        var created_time = member[0].created_date.getTime();
+            Member.find({ where: { 'email': context.req.body.email } }, function (err, response) {
+                if (response.length == 1) {
+                    if (!response[0].emailVerified) {
+                        var created_time = response[0].created_date.getTime();
                         var current_time = new Date().getTime();
                         var time_range_in_minutes = (current_time - created_time) / 60000;
                         if (time_range_in_minutes >= Member.app.settings.repeated_signup_interval) {
-                            Member.destroyById(member[0].__data.id, function (err, response) {
-                                next();
+                            Member.destroyById(response[0].__data.id, function (err, res) {
+                                appRoot.models.roleMappingMember.find({where:{ 'memberId': response[0].__data.id }}, function (err, role) {
+                                    role.forEach(function (role_object) {
+                                        role_object.remove();
+                                    })
+                                    next();
+                                });
                             })
                         }
+
                         else {
                             var interval = (Math.round(Member.app.settings.repeated_signup_interval - time_range_in_minutes));
-                            if(interval == 0){
+                            if (interval == 0) {
                                 interval = 1;
                             }
                             var error = new Error();
