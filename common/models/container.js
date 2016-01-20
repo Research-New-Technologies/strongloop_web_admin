@@ -3,7 +3,7 @@ module.exports = function (Container) {
     Container.beforeRemote('upload', function (context, member, next) {
         var AccessToken = appRoot.models.AccessToken;
         //check whether access token is valid or not
-        AccessToken.findById(context.req.query.access_token, function (err, token) {
+        AccessToken.findById(context.req.headers.access_token, function (err, token) {
             if (err) {
                 var error = new Error();
                 error.name = 'Bad Request'
