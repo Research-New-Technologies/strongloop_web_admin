@@ -13,21 +13,21 @@ module.exports = function (Member) {
             var role_member = role[0];
             //create a new admin member
             RoleMapping.create({ principalType: 'USER', principalId: user.id, roleId: role_member.id, memberId: user.id }, function (err, member) {
-                next();
+                var options = {
+                    type: 'email',
+                    to: user.email,
+                    from: 'noreply@loopback.com',
+                    subject: 'Thanks for registering.',
+                    redirect: '/#/confirmation',
+                    user: user,
+                };
+                user.verify(options, function (err, response) {
+                    if (err) return next(err);
+                    next();
+                });
+
             })
         })
-        var options = {
-            type: 'email',
-            to: user.email,
-            from: 'noreply@loopback.com',
-            subject: 'Thanks for registering.',
-            redirect: '/#/confirmation',
-            user: user,
-        };
-        user.verify(options, function (err, response) {
-            if (err) return next(err);
-            next();
-        });
     });
 
     Member.afterRemoteError('confirm', function (context, member) {
@@ -72,7 +72,7 @@ module.exports = function (Member) {
 
 
         context.req.body.created_date = new Date();
-        if (typeof (context.req.body.username) == 'undefined') {
+        if (typeof (context.req.body.username) == 'undefined' || context.req.body.username == '') {
             var error = new Error();
             error.name = 'BAD_REQUEST'
             error.status = 400;
