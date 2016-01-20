@@ -13,6 +13,8 @@ module.exports = function (Member) {
             var role_member = role[0];
             //create a new admin member
             RoleMapping.create({ principalType: 'USER', principalId: user.id, roleId: role_member.id, memberId: user.id }, function (err, member) {
+
+
                 var options = {
                     type: 'email',
                     to: user.email,
@@ -35,7 +37,12 @@ module.exports = function (Member) {
         context.res.end();
 
     })
-
+    Member.afterRemote('confirm', function (context, member, next) {
+        var Container = appRoot.models.container;
+        Container.createContainer({ name: member.id.toString() }, function (err, c) {
+            next();
+        });
+    })
     //send error response when login proccess is failed
     Member.afterRemoteError('login', function (context, next) {
         delete context.error.stack;
@@ -85,7 +92,6 @@ module.exports = function (Member) {
             Member.find({ where: { username: context.req.body.username, email: context.req.body.email } }, function (err, member) {
                 if (member.length == 1) {
                     if (!member.emailVerified) {
-                        console.log(member[0].id)
                         var created_time = member[0].created_date.getTime();
                         var current_time = new Date().getTime();
                         var time_range_in_minutes = (current_time - created_time) / 60000;
@@ -116,7 +122,6 @@ module.exports = function (Member) {
         
                     //check whether access token is valid or not
                     AccessToken.findForRequest(context.req, {}, function (aux, accessToken) {
-          
                         //request is from unauthenticated member
                         if (typeof (accessToken) == 'undefined') {
                             next();
@@ -237,12 +242,9 @@ module.exports = function (Member) {
   
     //send password reset link when requested
     Member.on('resetPasswordRequest', function (info) {
-        console.log(info)
         var host = (Member.app && Member.app.settings.host) || 'localhost';
         var port = (Member.app && Member.app.settings.port) || 3000;
-        console.log(Member.app.settings.host)
         var url = host + ':' + port + '/#/reset-password';
-        console.log(url)
         var html = 'Click <a href="http://' + url + '?password=' +
             info.user.password + '&token=' + info.accessToken.id + '&email=' + info.user.email + '&id=' + info.user.id + '">here</a> to reset your password';
 
