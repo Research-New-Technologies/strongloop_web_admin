@@ -27,23 +27,23 @@ module.exports = function (Member) {
     
     //redirect to error page when confirm email is invalid
     Member.afterRemoteError('confirm', function (context, member, next) {
-         Member.findById(context.req.query.uid, function (err, user) {
-                if (user){
-                    if(user.__data.emailVerified){
-                        context.res.redirect('/#/member-confirm-email-verified');
-                        context.res.end();
-                    }
-                    else {
-                        context.res.redirect('/#/member-confirm-error');
-                        context.res.end(); 
-                    }
-                } 
-                
+        Member.findById(context.req.query.uid, function (err, user) {
+            if (user) {
+                if (user.__data.emailVerified) {
+                    context.res.redirect('/#/member-confirm-email-verified');
+                    context.res.end();
+                }
                 else {
                     context.res.redirect('/#/member-confirm-error');
                     context.res.end();
                 }
-            });
+            }
+
+            else {
+                context.res.redirect('/#/member-confirm-error');
+                context.res.end();
+            }
+        });
     })
     
     //redirect to success page when confirm email is success
@@ -76,6 +76,18 @@ module.exports = function (Member) {
         }
     });
 
+    Member.afterRemote('login', function (context, user, next) {
+
+        Member.findById(context.result.__data.userId, function (err, member) {
+            context.result.__data.first_name = member.first_name;
+            context.result.__data.last_name = member.last_name;
+            context.result.__data.dob = member.dob;
+            context.result.__data.username = member.username;
+
+            next();
+        })
+    })
+
 
     //delete unused information on reset password response
     Member.afterRemoteError('resetPassword', function (context, next) {
@@ -106,7 +118,7 @@ module.exports = function (Member) {
                         var time_range_in_minutes = (current_time - created_time) / 60000;
                         if (time_range_in_minutes >= Member.app.settings.repeated_signup_interval) {
                             Member.destroyById(response[0].__data.id, function (err, res) {
-                                appRoot.models.roleMappingMember.find({where:{ 'memberId': response[0].__data.id }}, function (err, role) {
+                                appRoot.models.roleMappingMember.find({ where: { 'memberId': response[0].__data.id } }, function (err, role) {
                                     role.forEach(function (role_object) {
                                         role_object.remove();
                                     })
