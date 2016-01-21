@@ -45,12 +45,17 @@ angular.module('app')
       })
       .state('member-confirm-error', {
         url: '/member-confirm-error',
-        templateUrl: 'modules/auth/views/member-confirm-error.html'
+        templateUrl: 'modules/auth/views/member-confirm-error.html',
+        controller: 'ConfirmationController'
+      })
+      .state('member-confirm-email-verified', {
+        url: '/member-confirm-email-verified',
+        templateUrl: 'modules/auth/views/member-confirm-email-verified.html',
+        controller: 'ConfirmationController'
       });
 
     $urlRouterProvider.otherwise('login');
   
-
     
   }])
   .run(function($rootScope, $state){

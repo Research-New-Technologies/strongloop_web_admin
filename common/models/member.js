@@ -1,8 +1,7 @@
 module.exports = function (Member) {
     var loopback = require('../../node_modules/loopback/lib/loopback');
     var appRoot = require('../../server/server');
-    var RoleMember = appRoot.models.roleMember;
-    var RoleMapping = appRoot.models.RoleMappingMember;
+    
     //send verification email after registration
     Member.afterRemote('create', function (context, user, next) {
         //retrive role admin object
@@ -10,36 +9,51 @@ module.exports = function (Member) {
             var role_member = role[0];
             //create a new admin member
             appRoot.models.RoleMappingMember.create({ principalType: 'USER', principalId: user.id, roleId: role_member.id, memberId: user.id }, function (err, member) {
-
-
                 var options = {
                     type: 'email',
                     to: user.email,
                     from: 'noreply@loopback.com',
                     subject: 'Thanks for registering.',
-                    redirect: '/#/confirmation',
+                    redirect: encodeURIComponent('/#/confirmation'),
                     user: user,
                 };
                 user.verify(options, function (err, response) {
                     if (err) return next(err);
                     next();
                 });
-
             })
         })
     });
-
-    Member.afterRemoteError('confirm', function (context, member) {
-        context.res.redirect('/#/member-confirm-error');
-        context.res.end();
-
+    
+    //redirect to error page when confirm email is invalid
+    Member.afterRemoteError('confirm', function (context, member, next) {
+         Member.findById(context.req.query.uid, function (err, user) {
+                if (user){
+                    if(user.__data.emailVerified){
+                        context.res.redirect('/#/member-confirm-email-verified');
+                        context.res.end();
+                    }
+                    else {
+                        context.res.redirect('/#/member-confirm-error');
+                        context.res.end(); 
+                    }
+                } 
+                
+                else {
+                    context.res.redirect('/#/member-confirm-error');
+                    context.res.end();
+                }
+            });
     })
+    
+    //redirect to success page when confirm email is success
     Member.afterRemote('confirm', function (context, member, next) {
         var Container = appRoot.models.container;
-        Container.createContainer({ name: member.id.toString() }, function (err, c) {
+        Container.createContainer({ name: context.req.query.uid }, function (err, c) {
             next();
         });
     })
+    
     //send error response when login proccess is failed
     Member.afterRemoteError('login', function (context, next) {
         delete context.error.stack;
@@ -73,8 +87,6 @@ module.exports = function (Member) {
 
     //check whether the request is from Admin or unauthenticated member.
     Member.beforeRemote('create', function (context, user, next) {
-
-
         context.req.body.created_date = new Date();
         if (typeof (context.req.body.username) == 'undefined' || context.req.body.username == '') {
             var error = new Error();
@@ -114,7 +126,6 @@ module.exports = function (Member) {
                             error.message = 'Please sign up in next ' + interval + ' minutes';
                             error.code = 'RE_SIGNUP_ERROR';
                             return next(error)
-
                         }
                     }
                     else {
@@ -203,14 +214,8 @@ module.exports = function (Member) {
                         })
                 }
             })
-
-
         }
-
-
     })
-    
-  
 
     //reset the user's pasword
     Member.beforeRemote('resetPassword', function (context, user, next) {

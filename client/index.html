@@ -89,15 +89,21 @@
 
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini" ng-app="app" class="ng-cloak">
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app" ng-cloak>
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
-            <a href="" class="logo">
+            <a href="" class="logo" ng-show="isAdmin">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>W</b>A</span>
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Web</b> Admin</span>
+            </a>
+            <a href="" class="logo" ng-show="!isAdmin">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>C</b>N</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>Company</b> Name</span>
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -764,7 +770,6 @@
     <script src="modules/auth/controllers/forgot-password.controller.js"></script>
     <script src="modules/auth/controllers/reset-password.controller.js"></script>
     <script src="modules/auth/controllers/confirmation.controller.js"></script>
-    <script src="modules/auth/controllers/update-account.controller.js"></script>
     <script src="modules/dashboard/controllers/dashboard.controller.js"></script>
     <script src="modules/order/controllers/order.controller.js"></script>
     <script src="modules/dashboard/services/dashboard.service.js"></script>

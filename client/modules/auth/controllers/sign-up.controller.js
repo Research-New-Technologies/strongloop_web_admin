@@ -1,7 +1,7 @@
 angular.module('app')
     .controller('SignUpController', function ($scope, Member, $state, $rootScope, LoopBackAuth) {
         $scope.user = {};
-        
+        $rootScope.isAdmin = true;
         
         $scope.sign_up = function (user) {
             if($scope.signUpForm.$invalid || $scope.user.password != $scope.user.password_confirmation){

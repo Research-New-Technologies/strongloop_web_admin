@@ -1,7 +1,7 @@
 angular.module('app')
     .controller('DashboardController', function ($scope, $state, $rootScope,$window, $route,Dashboard, $timeout, $modal, Member, Role) {
         $scope.users = {};
-        
+        $rootScope.isAdmin = true;
         $scope.getAllUser = function () {
             Dashboard.getAllUsers().then(function(response){
                 $scope.users = response;

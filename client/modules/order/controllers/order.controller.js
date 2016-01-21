@@ -1,6 +1,6 @@
 angular.module('app')
     .controller('OrderController', function ($scope, Order, Member, $rootScope, $state, $window, $modal) {
-        
+        $rootScope.isAdmin = true;
         $scope.orders = {};
         $scope.popupDate = {};
         $scope.format = 'dd-MM-yyyy';

@@ -1,6 +1,7 @@
 angular.module('app')
     .controller('LoginController', function ($scope, Member, $state, $rootScope, LoopBackAuth, cfpLoadingBar) {
         $scope.user = {};
+        $rootScope.isAdmin = true;
         // find by id
         $scope.find_by_id = function (id) {
             Member.findById({ id: id }, function (user) {

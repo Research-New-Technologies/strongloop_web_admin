@@ -1,6 +1,6 @@
 {
   "restApiRoot": "/api",
-  "host": "172.19.12.39",
+  "host": "localhost",
   "repeated_signup_interval": 10,
   "port": 3000,
   "remoting": {

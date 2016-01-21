@@ -102,3 +102,7 @@ th,tr {
 .col-40 {
     width: 40%!important;
 }
+.member-confirmation {
+    text-align: center;
+    color: white;
+}

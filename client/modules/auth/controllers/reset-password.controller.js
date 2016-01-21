@@ -2,7 +2,7 @@ angular.module('app')
     .controller('ResetPasswordController', function ($scope, Member, $state, $rootScope, LoopBackAuth, $stateParams, $http, cfpLoadingBar) {
         $http.defaults.headers.common['access_token'] = $stateParams.token;
         $scope.user = {};
-
+        $rootScope.isAdmin = true; 
         $scope.save = function () {
             cfpLoadingBar.start();
 
