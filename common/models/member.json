@@ -1,55 +1,38 @@
 {
-  "name": "member",
-  "base": "User",
-  "idInjection": true,
-  "options": {
-    "validateUpsert": true
-  },
-  "properties": {},
-  "validations": [],
-  "relations": {
-    "roleMembers": {
-      "type": "hasMany",
-      "model": "roleMember",
-      "foreignKey": "memberId",
-      "through": "roleMappingMember"
+    "name": "member",
+    "base": "User",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true
     },
-    "roleMappingMembers": {
-      "type": "hasMany",
-      "model": "roleMappingMember",
-      "foreignKey": "memberId"
+    "properties": {},
+    "validations": [],
+    "relations": {
+        "Role": {
+            "type": "hasMany",
+            "model": "Role",
+            "foreignKey": "principalId",
+            "through": "RoleMapping"
+        },
+        "roleMapping": {
+            "type": "hasMany",
+            "model": "RoleMapping",
+            "foreignKey": "principalId"
+        },
+        "orders": {
+            "type": "hasMany",
+            "model": "order",
+            "foreignKey": "memberId"
+        }
     },
-    "orders": {
-      "type": "hasMany",
-      "model": "order",
-      "foreignKey": "memberId"
-    }
-  },
-  "acls": [
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "create"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "confirm"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "updateAttributes"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "permission": "ALLOW",
-      "property": "*"
-    }
-  ],
-  "methods": {}
+    "acls": [
+        {
+            "accessType": "*",
+            "principalType": "ROLE",
+            "principalId": "admin",
+            "permission": "ALLOW",
+            "model": "member"
+        }
+    ],
+    "methods": {}
 }

@@ -77,12 +77,12 @@ module.exports = function (Member) {
     });
 
     Member.afterRemote('login', function (context, user, next) {
-        Member.findById(context.result.__data.userId, { include: { relation: 'roleMappingMembers', scope: { include: { relation: 'role' } } } }, function (err, member) {
+        Member.findById(context.result.__data.userId, { include: { relation: 'roleMapping', scope: { include: { relation: 'role' } } } }, function (err, member) {
             context.result.__data.first_name = member.first_name;
             context.result.__data.last_name = member.last_name;
             context.result.__data.dob = member.dob;
             context.result.__data.username = member.username;
-            context.result.__data.role_name = member.__data.roleMappingMembers[0].__data.role.name;
+            context.result.__data.role_name = member.__data.roleMapping[0].__data.role.name;
             next();
         })
 
@@ -262,6 +262,24 @@ module.exports = function (Member) {
         }
 
     });
+    
+    //find members
+    Member.afterRemote('find', function (context, user, next) {
+        var results = [];
+        context.result.forEach(function (result) {
+            Member.findById(result.__data.id, { include: { relation: 'roleMapping', scope: { include: { relation: 'role' } } } }, function (err, member) {
+                result.__data.role_name = member.__data.roleMapping[0].__data.role.name;
+                results.push(result);
+                if (results.length == context.result.length) {
+                    context.result = results;
+                    next();
+                }
+            })
+
+
+        })
+
+    })
   
     //send password reset link when requested
     Member.on('resetPasswordRequest', function (info) {

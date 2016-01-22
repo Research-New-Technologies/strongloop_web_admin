@@ -15,11 +15,11 @@
   },
   "User": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "AccessToken": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "ACL": {
     "dataSource": "mongodb",
@@ -27,15 +27,11 @@
   },
   "RoleMapping": {
     "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Role": {
     "dataSource": "mongodb",
-    "public": true
-  },
-  "Employee": {
-    "dataSource": "mongodb",
-    "public": true
+    "public": false
   },
   "Email": {
     "dataSource": "emailDs"
@@ -46,18 +42,6 @@
     "options": {
       "emailVerificationRequired": true
     }
-  },
-  "roleMember": {
-    "dataSource": "mongodb",
-    "public": true
-  },
-  "roleMappingMember": {
-    "dataSource": "mongodb",
-    "public": true
-  },
-  "order": {
-    "dataSource": "mongodb",
-    "public": true
   },
   "container": {
     "dataSource": "storage",
