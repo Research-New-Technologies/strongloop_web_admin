@@ -19,12 +19,19 @@ angular.module('app')
             cfpLoadingBar.start()
             if (!$scope.loginForm.email.$invalid && !$scope.loginForm.password.$invalid) {
                 Member.login($scope.user, function (response) {
-                    $rootScope.is_authenticated = true;
-                    window.localStorage.setItem('IS_AUTHENTICATED', true);
-                    window.localStorage.setItem('USER_ID', response.userId);
-                    window.localStorage.setItem('TOKEN', response.id);
-                    $scope.find_by_id(response.userId);
+                    if(response.role_name == 'member'){
+                        alert("You are not allowed to access this Web, please login using mobile Application")
+                        window.localStorage.clear();
+                    }
+                    else {
+                        $rootScope.is_authenticated = true;
+                        window.localStorage.setItem('IS_AUTHENTICATED', true);
+                        window.localStorage.setItem('USER_ID', response.userId);
+                        window.localStorage.setItem('TOKEN', response.id);
+                        $scope.find_by_id(response.userId); 
+                    }
                     cfpLoadingBar.complete()
+                    
                 }, function (response) {
                     cfpLoadingBar.complete()
                     alert(response.data.error.message)
@@ -43,7 +50,6 @@ angular.module('app')
 
         // signout
         $scope.sign_out = function () {
-            console.log(LoopBackAuth)
             Member.logout();
             window.localStorage.clear();
             $rootScope.is_authenticated = false;
