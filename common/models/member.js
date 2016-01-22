@@ -77,18 +77,17 @@ module.exports = function (Member) {
     });
 
     Member.afterRemote('login', function (context, user, next) {
-
-        Member.findById(context.result.__data.userId, function (err, member) {
+        Member.findById(context.result.__data.userId, { include: { relation: 'roleMappingMembers', scope: { include: { relation: 'role' } } } }, function (err, member) {
             context.result.__data.first_name = member.first_name;
             context.result.__data.last_name = member.last_name;
             context.result.__data.dob = member.dob;
             context.result.__data.username = member.username;
-
+            context.result.__data.role_name = member.__data.roleMappingMembers[0].__data.role.name;
             next();
         })
+
     })
-
-
+    
     //delete unused information on reset password response
     Member.afterRemoteError('resetPassword', function (context, next) {
         delete context.error.stack;
