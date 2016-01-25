@@ -1,5 +1,5 @@
 {
-    "name": "member",
+    "name": "user",
     "base": "User",
     "idInjection": true,
     "options": {
@@ -22,7 +22,7 @@
         "orders": {
             "type": "hasMany",
             "model": "order",
-            "foreignKey": "memberId"
+            "foreignKey": "userId"
         }
     },
     "acls": [
@@ -31,7 +31,7 @@
             "principalType": "ROLE",
             "principalId": "admin",
             "permission": "ALLOW",
-            "model": "member"
+            "model": "user"
         }
     ],
     "methods": {}

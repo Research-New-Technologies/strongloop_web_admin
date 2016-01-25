@@ -1,11 +1,11 @@
 /* global verificationToken */
 module.exports = function (app) {
-    var Member = app.models.Member;
+    var User = app.models.user;
     var Role = app.models.Role;
     var RoleMapping = app.models.RoleMapping;
     
 
-RoleMapping.belongsTo(Member, {foreignKey: 'principalId'});
+RoleMapping.belongsTo(User, {foreignKey: 'principalId'});
 RoleMapping.belongsTo(Role, {foreignKey: 'roleId'});
 
     //create admin role, skip if already created
@@ -19,7 +19,7 @@ RoleMapping.belongsTo(Role, {foreignKey: 'roleId'});
             }, function (err, role) {
                 if (err) throw err;
 
-                Member.create({ username: 'admin', email: 'admin@admin.com', first_name: 'admin', password: 'password', emailVerified: true }, function (err, user) {
+                User.create({ username: 'admin', email: 'admin@admin.com', first_name: 'admin', password: 'password', emailVerified: true }, function (err, user) {
                     if (err) {
                         console.log("admin already created")
                     }
@@ -37,7 +37,7 @@ RoleMapping.belongsTo(Role, {foreignKey: 'roleId'});
             Role.create({
                 name: 'member'
             }, function (err, role) {
-                Member.create({ username: 'member', email: 'member@member.com', first_name: 'member', password: 'password', emailVerified: true }, function (err, user) {
+                User.create({ username: 'member', email: 'member@member.com', first_name: 'member', password: 'password', emailVerified: true }, function (err, user) {
                     if (err) {
                         console.log("member already created")
                     }

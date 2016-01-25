@@ -1,14 +1,14 @@
-module.exports = function (Member) {
+module.exports = function (User) {
     var loopback = require('../../node_modules/loopback/lib/loopback');
     var appRoot = require('../../server/server');
     
     //send verification email after registration
-    Member.afterRemote('create', function (context, user, next) {
+    User.afterRemote('create', function (context, user, next) {
         //retrive role admin object
-        appRoot.models.roleMember.find({ where: { name: 'member' } }, function (err, role) {
-            var role_member = role[0];
+        appRoot.models.Role.find({ where: { name: 'member' } }, function (err, role) {
+            var roleObject = role[0];
             //create a new admin member
-            appRoot.models.RoleMappingMember.create({ principalType: 'USER', principalId: user.id, roleId: role_member.id, memberId: user.id }, function (err, member) {
+            appRoot.models.RoleMapping.create({ principalType: 'USER', principalId: user.id, roleId: roleObject.id }, function (err, member) {
                 var options = {
                     type: 'email',
                     to: user.email,
@@ -26,8 +26,8 @@ module.exports = function (Member) {
     });
     
     //redirect to error page when confirm email is invalid
-    Member.afterRemoteError('confirm', function (context, member, next) {
-        Member.findById(context.req.query.uid, function (err, user) {
+    User.afterRemoteError('confirm', function (context, User, next) {
+        User.findById(context.req.query.uid, function (err, user) {
             if (user) {
                 if (user.__data.emailVerified) {
                     context.res.redirect('/#/member-confirm-email-verified');
@@ -47,7 +47,7 @@ module.exports = function (Member) {
     })
     
     //redirect to success page when confirm email is success
-    Member.afterRemote('confirm', function (context, member, next) {
+    User.afterRemote('confirm', function (context, user, next) {
         var Container = appRoot.models.container;
         Container.createContainer({ name: context.req.query.uid }, function (err, c) {
             next();
@@ -55,7 +55,7 @@ module.exports = function (Member) {
     })
     
     //send error response when login proccess is failed
-    Member.afterRemoteError('login', function (context, next) {
+    User.afterRemoteError('login', function (context, next) {
         delete context.error.stack;
         if (context.error.code == 'LOGIN_FAILED_EMAIL_NOT_VERIFIED') {
             context.error.message = "Please verify your email before login"
@@ -63,7 +63,7 @@ module.exports = function (Member) {
             next();
         }
         else {
-            Member.find({ where: { email: context.req.body.email } }, function (err, user) {
+            User.find({ where: { email: context.req.body.email } }, function (err, user) {
                 if (user.length == 0) {
                     context.error.message = "Login failed, " + context.req.body.email + " is not registered";
                 }
@@ -76,20 +76,20 @@ module.exports = function (Member) {
         }
     });
 
-    Member.afterRemote('login', function (context, user, next) {
-        Member.findById(context.result.__data.userId, { include: { relation: 'roleMapping', scope: { include: { relation: 'role' } } } }, function (err, member) {
-            context.result.__data.first_name = member.first_name;
-            context.result.__data.last_name = member.last_name;
-            context.result.__data.dob = member.dob;
-            context.result.__data.username = member.username;
-            context.result.__data.role_name = member.__data.roleMapping[0].__data.role.name;
+    User.afterRemote('login', function (context, user, next) {
+        User.findById(context.result.__data.userId, { include: { relation: 'roleMapping', scope: { include: { relation: 'role' } } } }, function (err, user) {
+            context.result.__data.first_name = user.first_name;
+            context.result.__data.last_name = user.last_name;
+            context.result.__data.dob = user.dob;
+            context.result.__data.username = user.username;
+            context.result.__data.role_name = user.__data.roleMapping[0].__data.role.name;
             next();
         })
 
     })
     
     //delete unused information on reset password response
-    Member.afterRemoteError('resetPassword', function (context, next) {
+    User.afterRemoteError('resetPassword', function (context, next) {
         delete context.error.stack;
         context = context.error;
         next();
@@ -97,7 +97,7 @@ module.exports = function (Member) {
 
 
     //check whether the request is from Admin or unauthenticated member.
-    Member.beforeRemote('create', function (context, user, next) {
+    User.beforeRemote('create', function (context, user, next) {
         context.req.body.created_date = new Date();
         if (typeof (context.req.body.username) == 'undefined' || context.req.body.username == '') {
             var error = new Error();
@@ -109,17 +109,17 @@ module.exports = function (Member) {
         }
         else {
 
-            Member.find({ where: { 'email': context.req.body.email } }, function (err, response) {
-                if (response.length == 1) {
-                    if (!response[0].emailVerified) {
-                        var created_time = response[0].created_date.getTime();
+            User.find({ where: { 'email': context.req.body.email } }, function (err, users) {
+                if (users.length == 1) {
+                    if (!users[0].emailVerified) {
+                        var created_time = users[0].created_date.getTime();
                         var current_time = new Date().getTime();
                         var time_range_in_minutes = (current_time - created_time) / 60000;
-                        if (time_range_in_minutes >= Member.app.settings.repeated_signup_interval) {
-                            Member.destroyById(response[0].__data.id, function (err, res) {
-                                appRoot.models.roleMappingMember.find({ where: { 'memberId': response[0].__data.id } }, function (err, role) {
-                                    role.forEach(function (role_object) {
-                                        role_object.remove();
+                        if (time_range_in_minutes >= User.app.settings.repeated_signup_interval) {
+                            User.destroyById(users[0].__data.id, function (err, res) {
+                                appRoot.models.RoleMapping.find({ where: { 'userId': users[0].__data.id } }, function (err, roleMappings) {
+                                    roleMappings.forEach(function (roleMappingObject) {
+                                        roleMappingObject.remove();
                                     })
                                     next();
                                 });
@@ -127,7 +127,7 @@ module.exports = function (Member) {
                         }
 
                         else {
-                            var interval = (Math.round(Member.app.settings.repeated_signup_interval - time_range_in_minutes));
+                            var interval = (Math.round(User.app.settings.repeated_signup_interval - time_range_in_minutes));
                             if (interval == 0) {
                                 interval = 1;
                             }
@@ -146,8 +146,8 @@ module.exports = function (Member) {
                 else {
                     //define object model
                     var AccessToken = appRoot.models.AccessToken;
-                    var RoleMember = appRoot.models.roleMember;
-                    var RoleMapping = appRoot.models.RoleMappingMember;
+                    var Role = appRoot.models.Role;
+                    var RoleMapping = appRoot.models.RoleMapping;
         
                     //check whether access token is valid or not
                     AccessToken.findForRequest(context.req, {}, function (aux, accessToken) {
@@ -159,18 +159,18 @@ module.exports = function (Member) {
                         //request is from authenticated member
                         else {
                             //retrive role admin object
-                            RoleMember.find({ where: { name: 'admin' } }, function (err, role) {
-                                var role_admin = role[0];
+                            Role.find({ where: { name: 'admin' } }, function (err, role) {
+                                var roleAdmin = role[0];
 
                                 //check whether there is role mapping from memberId and role admin id
-                                RoleMapping.find({ where: { memberId: context.req.accessToken.userId, roleId: role_admin.id } }, function (err, roleMapping) {
+                                RoleMapping.find({ where: { principalId: context.req.accessToken.userId, roleId: roleAdmin.id } }, function (err, roleMappings) {
                                     //if the request from admin user
-                                    if (roleMapping.length > 0) {
+                                    if (roleMappings.length > 0) {
                                         var userRequest = context.req.body;
-                                        userRequest.emailVerified = false;
+                                        userRequest.emailVerified = true;
                             
-                                        //create a new admin member
-                                        role_admin.members.create(userRequest, function (err, admin) {
+                                        //create a new admin
+                                        User.create(userRequest, function (err, admin) {
                                             //error occured when create a new admin
                                             if (err) {
                                                 var error = new Error();
@@ -183,31 +183,15 @@ module.exports = function (Member) {
                                 
                                             //successfully create a new admin
                                             else {
-                                    
-                                                //create a token
-                                                var tokenGenerator = Member.generateVerificationToken;
-                                                tokenGenerator(admin, function (err, token) {
-                                                    if (err) { }
-                                                    else {
-                                                        admin.verificationToken = token;
-                                                        admin.save(function (err) {
-                                                        });
+                                                role[0].principals.create({
+                                                    principalType: RoleMapping.USER,
+                                                    principalId: admin.id
+                                                }, function (err, principal) {
+                                                    if (err) {
+                                                        return next(err);
                                                     }
-                                        
-                                                    //add adminId and roleId into RoleMapping
-                                                    RoleMapping.find({ where: { roleId: role.id, memberId: admin.id } }, function (err, roleMapping) {
-                                                        roleMapping[0].principalType = RoleMapping.USER,
-                                                        roleMapping[0].principalId = admin.id;
-                                                        roleMapping[0].save(function (err) {
-                                                            if (err) {
-
-                                                            }
-                                                            else {
-                                                                return context.res.sendStatus(202);
-                                                            }
-                                                        });
-                                                    })
-                                                });
+                                                    return context.res.sendStatus(202);
+                                                })
                                             }
                                         });
                                     }
@@ -229,7 +213,7 @@ module.exports = function (Member) {
     })
 
     //reset the user's pasword
-    Member.beforeRemote('resetPassword', function (context, user, next) {
+    User.beforeRemote('resetPassword', function (context, user, next) {
         if (context.req.body.password) {
             if (!context.req.headers.access_token) return context.res.sendStatus(401);
       
@@ -237,7 +221,6 @@ module.exports = function (Member) {
             if (!context.req.body.password ||
                 !context.req.body.password_confirmation ||
                 context.req.body.password !== context.req.body.password_confirmation) {
-
 
                 var error = new Error();
                 error.name = 'BAD_REQUEST'
@@ -247,7 +230,7 @@ module.exports = function (Member) {
                 return next(error)
             }
 
-            Member.findById(context.req.body.id, function (err, user) {
+            User.findById(context.req.body.id, function (err, user) {
                 if (err) return context.res.sendStatus(404);
                 user.updateAttribute('password', context.req.body.password, function (err, user) {
                     if (err) return context.res.sendStatus(404);
@@ -263,12 +246,12 @@ module.exports = function (Member) {
 
     });
     
-    //find members
-    Member.afterRemote('find', function (context, user, next) {
+    //find users
+    User.afterRemote('find', function (context, user, next) {
         var results = [];
         context.result.forEach(function (result) {
-            Member.findById(result.__data.id, { include: { relation: 'roleMapping', scope: { include: { relation: 'role' } } } }, function (err, member) {
-                result.__data.role_name = member.__data.roleMapping[0].__data.role.name;
+            User.findById(result.__data.id, { include: { relation: 'roleMapping', scope: { include: { relation: 'role' } } } }, function (err, users) {
+                result.__data.role_name = users.__data.roleMapping[0].__data.role.name;
                 results.push(result);
                 if (results.length == context.result.length) {
                     context.result = results;
@@ -282,9 +265,9 @@ module.exports = function (Member) {
     })
   
     //send password reset link when requested
-    Member.on('resetPasswordRequest', function (info) {
-        var host = (Member.app && Member.app.settings.host) || 'localhost';
-        var port = (Member.app && Member.app.settings.port) || 3000;
+    User.on('resetPasswordRequest', function (info) {
+        var host = (User.app && User.app.settings.host) || 'localhost';
+        var port = (User.app && User.app.settings.port) || 3000;
         var url = host + ':' + port + '/#/reset-password';
         var html = 'Click <a href="http://' + url + '?password=' +
             info.user.password + '&token=' + info.accessToken.id + '&email=' + info.user.email + '&id=' + info.user.id + '">here</a> to reset your password';

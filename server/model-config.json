@@ -36,7 +36,7 @@
   "Email": {
     "dataSource": "emailDs"
   },
-  "member": {
+  "user": {
     "dataSource": "mongodb",
     "public": true,
     "options": {

@@ -1,9 +1,5 @@
 module.exports = function (Container) {
-
-
     var appRoot = require('../../server/server');
-    var AccessToken = appRoot.models.AccessToken;
-
 
     Container.beforeRemote('upload', function (context, member, next) {
         var AccessToken = appRoot.models.AccessToken;
@@ -95,30 +91,30 @@ module.exports = function (Container) {
 
     Container.afterRemote('upload', function (context, entity, next) {
         // TODO: Get pricture_type from header
-        var Member = appRoot.models.member;
+        var User = appRoot.models.user;
         if (context.req.headers.picture_type == "profile picture") {
-            Member.findById(context.req.params.container, function (err, member) {
-                if (typeof (member.pictures) == 'undefined') {
-                    member.pictures = [];
+            User.findById(context.req.params.container, function (err, user) {
+                if (typeof (user.pictures) == 'undefined') {
+                    user.pictures = [];
                 }
                 else {
-                    for (var i = 0; i < member.pictures.length; i++) {
-                        if (member.pictures[i].type == 'profile picture') {
-                            Container.removeFile(context.req.params.container, member.pictures[i].name, function (err) {
-                                member.pictures[i] = undefined;
-                                member.save(function (err) {
+                    for (var i = 0; i < user.pictures.length; i++) {
+                        if (user.pictures[i].type == 'profile picture') {
+                            Container.removeFile(context.req.params.container, user.pictures[i].name, function (err) {
+                                user.pictures[i] = undefined;
+                                user.save(function (err) {
 
                                 });
                             })
                         }
                     }
                 }
-                member.pictures = [];
+                user.pictures = [];
                 var picture = {};
                 picture.name = entity.result.files.data[0].name;
                 picture.type = context.req.headers.picture_type;
-                member.pictures.push(picture);
-                member.save(function (err) {
+                user.pictures.push(picture);
+                user.save(function (err) {
                     next();
                 });
             });
