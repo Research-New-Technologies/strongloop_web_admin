@@ -1,35 +1,24 @@
 angular.module('app')
-    .controller('DashboardController', function ($scope, $state, $rootScope,$window, $route,Dashboard, $timeout, $modal, Member, Role) {
+    .controller('DashboardController', function ($scope, $state, $rootScope, $window, $route, $timeout, $modal, User) {
         $scope.users = {};
         $rootScope.isAdmin = true;
-        $scope.getAllUser = function () {
-            Dashboard.getAllUsers().then(function(response){
+        $scope.limit = 10;
+        $scope.skip = 1;
+        
+        $scope.getUsersWithSortAndPage = function (orderBy, type) {
+            User.find({ filter: { limit: $scope.limit, skip: $scope.skip - 1, order: orderBy + ' ' + type } }, function (response) {
                 $scope.users = response;
-                   
-            },function(response){
-                console.log(response)
+            }, function(err){
+                alert(JSON.stringify(err))
             })
-            // $scope.users = [];
-            // Member.find({ filter: { include: { relation: 'roleMappingMembers', scope: { include: { relation: 'role' } } } } }, function (response) {
-            //     $scope.users = response;
-            // }, function (err) {
-            //     alert("please re-login to view dashboard");
-            //     Member.logout();
-            //     window.localStorage.clear();
-            //     $rootScope.is_authenticated = false;
-            //     $rootScope.username = "";
-            //     $state.go("login")
-            // });
-
-
         }
-        $scope.getAllUser();
+        
+        $scope.getUsersWithSortAndPage('roleId', 'ASC');
 
         $scope.delete = function (user) {
             $scope.selected_user = user;
             $scope.modal_title = "Delete User Confirmation";
             $scope.isDelete = true;
-
             $scope.openModal();
         }
 
@@ -64,24 +53,24 @@ angular.module('app')
                 var user_send_to_server = {};
                 angular.copy(user, user_send_to_server)
                 delete user_send_to_server.password_confirmation;
-                Member.create(user_send_to_server, function (user) {
+                User.create(user_send_to_server, function (user) {
                     alert("Successfully add a new user");
                     $scope.getAllUser();
                     $scope.modalInstance.close();
-                     $window.location.reload();
+                    $window.location.reload();
                 }, function (response) {
                     alert(JSON.stringify(response.data.error.message))
                 });
-           
+
             }
         }
 
         $scope.deleteUser = function (user) {
-            Member.destroyById({ id: user.id }, function (response) {
+            User.destroyById({ id: user.id }, function (response) {
                 $scope.users = [];
                 alert("Successfully delete the user")
                 $scope.modalInstance.close();
-             
+
                 $scope.getAllUser();
                 $window.location.reload();
             }, function (response) {
@@ -90,7 +79,7 @@ angular.module('app')
         }
 
         $scope.updateUser = function (user) {
-            Member.prototype$updateAttributes({ id: user.id, email: user.email, username: user.username, first_name: user.first_name, last_name: user.last_name }, function (response) {
+            User.prototype$updateAttributes({ id: user.id, email: user.email, username: user.username, first_name: user.first_name, last_name: user.last_name }, function (response) {
                 alert("Successfully update the user")
                 $scope.modalInstance.close();
                 $scope.getAllUser();
@@ -112,6 +101,59 @@ angular.module('app')
         $scope.closeModal = function () {
             $scope.modalInstance.close();
         }
-
-
+        
+        
+        
+        
+        //pagination - go to desired page
+        $scope.goToPage = function () {
+            if ($scope.limit <= 0) {
+                alert("Please input valid page")
+            }
+            else {
+                $scope.getOrderByPage();
+            }
+        }
+        
+        //pagination - go to previous page
+        $scope.goToPrev = function () {
+            if ($scope.skip > 1) {
+                $scope.skip--;
+                $scope.getOrderByPage();
+            }
+        }
+        
+        //pagination - go to next page
+        $scope.goToNext = function () {
+            $scope.skip++;
+            $scope.getOrderByPage();
+        }
+        
+        //sort by User ID
+        $scope.sortById = function () {
+            if (typeof ($scope.users) != 'undefined') {
+                $scope.skip = 1;
+                if ($scope.SortByIdAsc) {
+                    $scope.SortByIdAsc = false;
+                    $scope.getUsersWithSortAndPage('id', 'DESC');
+                }
+                else {
+                    $scope.SortByIdAsc = true;
+                    $scope.getUsersWithSortAndPage('id', 'ASC');
+                }
+            }
+        }
+        
+        //sort by User ID
+        $scope.sortBy = function (key) {
+                $scope.skip = 1;
+                if ($scope.SortAsc) {
+                    $scope.SortAsc = false;
+                    $scope.getUsersWithSortAndPage(key, 'DESC');
+                }
+                else {
+                    $scope.SortAsc = true;
+                    $scope.getUsersWithSortAndPage(key, 'ASC');
+                }
+            }
     })

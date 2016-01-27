@@ -6,20 +6,9 @@ module.exports = function (Container) {
       
         //check whether access token is valid or not
         AccessToken.findById(context.req.headers.access_token, function (err, token) {
-            if (err) {
-                var error = new Error();
-                error.name = 'Bad Request'
-                error.status = 400;
-                error.message = 'BAD REQUEST';
-                error.code = 'BAD REQUEST';
-                return next(error)
-            } else if (token) {
+            if (token != null) {
                 token.validate(function (err, isValid) {
-                    if (err) {
-                        next();
-                    }
-
-                    else if (isValid) {
+                    if (isValid) {
                         if (context.req.params.container == token.userId) {
                             next();
                         }
@@ -41,6 +30,14 @@ module.exports = function (Container) {
                     }
                 });
             }
+            else {
+                var error = new Error();
+                error.name = 'Unauthorized'
+                error.status = 401;
+                error.message = 'Invalid Access Token';
+                error.code = 'INVALID_TOKEN';
+                return next(error)
+            }
         });
 
     })
@@ -51,17 +48,8 @@ module.exports = function (Container) {
         AccessToken.findById(context.req.headers.access_token, function (err, token) {
             if (token != null) {
                 token.validate(function (err, isValid) {
-                    console.log(isValid)
-                    if (err) {
-                        var error = new Error();
-                        error.name = 'Unauthorized'
-                        error.status = 401;
-                        error.message = 'Invalid Access Token';
-                        error.code = 'INVALID_TOKEN';
-                        return next(error)
-                    }
 
-                    else if (isValid) {
+                    if (isValid) {
                         if (context.req.params.container == token.userId) {
                             next();
                         }
@@ -73,7 +61,14 @@ module.exports = function (Container) {
                             error.code = 'INVALID_URL';
                             return next(error)
                         }
-
+                    }
+                    else {
+                        var error = new Error();
+                        error.name = 'Unauthorized'
+                        error.status = 401;
+                        error.message = 'Invalid Access Token';
+                        error.code = 'INVALID_TOKEN';
+                        return next(error)
                     }
                 })
             }

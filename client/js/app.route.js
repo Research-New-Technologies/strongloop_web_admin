@@ -1,11 +1,6 @@
 angular.module('app')
   .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider, $rootScope) {
     $stateProvider
-      .state('employee', {
-        url: '/employee',
-        templateUrl: 'modules/employee/views/employee.html',
-        controller: 'EmployeeController'
-      })
       .state('login', {
         url: '/login',
         templateUrl: 'modules/auth/views/login.html',
@@ -30,12 +25,6 @@ angular.module('app')
         url: '/dashboard',
         templateUrl: 'modules/dashboard/views/dashboard.html',
         controller: 'DashboardController',
-        isAuthenticatedView:true
-      })
-      .state('order', {
-        url: '/order',
-        templateUrl: 'modules/order/views/order.html',
-        controller: 'OrderController',
         isAuthenticatedView:true
       })
       .state('confirmation', {

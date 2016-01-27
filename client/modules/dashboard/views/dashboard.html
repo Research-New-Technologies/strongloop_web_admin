@@ -52,12 +52,12 @@
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
                         <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Role</th>
+                            <th><a href="" ng-click="sortBy('id')">ID</a></th>
+                            <th><a href="" ng-click="sortBy('username')">Username</a></th>
+                            <th><a href="" ng-click="sortBy('username')">Email</a></th>
+                            <th><a href="" ng-click="sortBy('first_name')">First Name</a></th>
+                            <th><a href="" ng-click="sortBy('last_name')">Last Name</a></th>
+                            <th><a href="" ng-click="sortBy('roleId')">Role</a></th>
                             <th>Actions</th>
                         </tr>
                         <tr ng-repeat="user in users">
@@ -66,7 +66,7 @@
                             <td class="">{{user.email}}</td>
                             <td class="">{{user.first_name}}</td>
                             <td class="">{{user.last_name}}</td>
-                            <td class="">{{user.roleMappingMembers[0].role.name}}</td>
+                            <td class="">{{user.role_name}}</td>
                             <td class="">
                                 <button class="btn btn-default margin-15" title="Edit this field" data-toggle="modal" data-target="#myModal"
                                 ng-click="edit(user)"><i class="fa fa-edit"></i></button>

@@ -26,7 +26,7 @@ module.exports = function (User) {
     });
     
     //redirect to error page when confirm email is invalid
-    User.afterRemoteError('confirm', function (context, User, next) {
+    User.afterRemoteError('confirm', function (context, user, next) {
         User.findById(context.req.query.uid, function (err, user) {
             if (user) {
                 if (user.__data.emailVerified) {
@@ -108,7 +108,6 @@ module.exports = function (User) {
             return next(error)
         }
         else {
-
             User.find({ where: { 'email': context.req.body.email } }, function (err, users) {
                 if (users.length == 1) {
                     if (!users[0].emailVerified) {
@@ -246,6 +245,36 @@ module.exports = function (User) {
 
     });
     
+    
+    //find users
+    User.beforeRemote('find', function (context, user, next) {
+        var queryFilter = JSON.parse(context.req.query.filter);
+        var RoleMapping = appRoot.models.RoleMapping;
+        var Role = appRoot.models.Role;
+        var results = [];
+        if (queryFilter.order == "roleId DESC" || queryFilter.order == "roleId ASC") {
+            RoleMapping.find({ limit: queryFilter.limit, skip: queryFilter.skip, order: queryFilter.order }, function (err, roleMappings) {
+                roleMappings.forEach(function (element, index, array) {
+                        User.findById(element.principalId , function (err, user) {
+                            Role.findById(element.roleId, function (err, role) {
+                            if (user != null) {
+                                user.role_name = role.name;
+                                results.push(user);
+                            }
+
+                            if (index == array.length - 1) {
+                                return context.res.status(200).send(results);
+                            }
+                        });
+                     })
+                });
+            })
+        }
+        else {
+            next();
+        }
+    })
+    
     //find users
     User.afterRemote('find', function (context, user, next) {
         var results = [];
@@ -257,11 +286,9 @@ module.exports = function (User) {
                     context.result = results;
                     next();
                 }
+
             })
-
-
         })
-
     })
   
     //send password reset link when requested

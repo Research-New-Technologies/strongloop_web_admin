@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('SignUpController', function ($scope, Member, $state, $rootScope, LoopBackAuth) {
+    .controller('SignUpController', function ($scope, User, $state, $rootScope, LoopBackAuth) {
         $scope.user = {};
         $rootScope.isAdmin = true;
         
@@ -16,7 +16,7 @@ angular.module('app')
                 var user_send_to_server = {};
                 angular.copy(user, user_send_to_server)
                 delete user_send_to_server.password_confirmation;
-                  Member.create(user_send_to_server, function (user) {
+                  User.create(user_send_to_server, function (user) {
                 alert("We've sent an email confirmation to your email. Please check your email to confirm the registration proccess")
                 
                 $state.go('login');

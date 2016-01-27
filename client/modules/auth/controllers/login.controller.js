@@ -1,10 +1,10 @@
 angular.module('app')
-    .controller('LoginController', function ($scope, Member, $state, $rootScope, LoopBackAuth, cfpLoadingBar) {
+    .controller('LoginController', function ($scope, User, $state, $rootScope, LoopBackAuth, cfpLoadingBar) {
         $scope.user = {};
         $rootScope.isAdmin = true;
         // find by id
         $scope.find_by_id = function (id) {
-            Member.findById({ id: id }, function (user) {
+            User.findById({ id: id }, function (user) {
                 window.localStorage.setItem('EMAIL', user.email);
                 window.localStorage.setItem('USER_NAME', user.username);
                 window.localStorage.setItem('FIRST_NAME', user.first_name);
@@ -18,7 +18,7 @@ angular.module('app')
         $scope.login = function () {
             cfpLoadingBar.start()
             if (!$scope.loginForm.email.$invalid && !$scope.loginForm.password.$invalid) {
-                Member.login($scope.user, function (response) {
+                User.login($scope.user, function (response) {
                     if(response.role_name == 'member'){
                         alert("You are not allowed to access this Web, please login using mobile Application")
                         window.localStorage.clear();
@@ -50,7 +50,7 @@ angular.module('app')
 
         // signout
         $scope.sign_out = function () {
-            Member.logout();
+            User.logout();
             window.localStorage.clear();
             $rootScope.is_authenticated = false;
             $rootScope.username = "";
