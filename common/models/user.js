@@ -182,7 +182,7 @@ module.exports = function (User) {
                                 
                                             //successfully create a new admin
                                             else {
-                                                role[0].principals.create({
+                                                roleAdmin.principals.create({
                                                     principalType: RoleMapping.USER,
                                                     principalId: admin.id
                                                 }, function (err, principal) {
@@ -244,13 +244,15 @@ module.exports = function (User) {
     });
     
     
-    //find users
+    //remote method - find users
     User.beforeRemote('find', function (context, user, next) {
         var queryFilter = JSON.parse(context.req.query.filter);
         var RoleMapping = appRoot.models.RoleMapping;
         var results = [];
+        
+        //check if the query filter is roleId, then prevent to next, do query and return the results
         if (queryFilter.order == "roleId DESC" || queryFilter.order == "roleId ASC") {
-
+            //use "include ['user','role'] to add user and role object into roleMapping"
             RoleMapping.find({ limit: queryFilter.limit, skip: queryFilter.skip, order: queryFilter.order, include: ['user', 'role'] }, function (err, roleMappings) {
                 roleMappings.forEach(function (element, index, array) {
                     var user = element.__data.user.__data;
@@ -263,6 +265,7 @@ module.exports = function (User) {
             });
 
         }
+        //when query filter is not roleId, pass it
         else {
             next();
         }
