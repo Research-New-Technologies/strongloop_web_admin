@@ -4,15 +4,27 @@ angular.module('app')
         $rootScope.isAdmin = true;
         $scope.limit = 10;
         $scope.skip = 1;
-        
+        $scope.key = 'id';
+        $scope.SortAsc = true;
+        $scope.userCount = 0;
         $scope.getUsersWithSortAndPage = function (orderBy, type) {
-            User.find({ filter: { limit: $scope.limit, skip: $scope.skip - 1, order: orderBy + ' ' + type } }, function (response) {
+            var skip = ($scope.skip - 1) * $scope.limit;
+            User.find({ filter: { limit: $scope.limit, skip: skip, order: orderBy + ' ' + type } }, function (response) {
                 $scope.users = response;
-            }, function(err){
+                User.count(function (count) {
+                    $scope.userCount = count.count;
+                    if (count.count <= $scope.limit * $scope.skip) {
+                        $scope.lastPage = true;
+                    }
+                    else {
+                        $scope.lastPage = false;
+                    }
+                })
+            }, function (err) {
                 alert(JSON.stringify(err))
             })
         }
-        
+
         $scope.getUsersWithSortAndPage('roleId', 'ASC');
 
         $scope.delete = function (user) {
@@ -101,17 +113,34 @@ angular.module('app')
         $scope.closeModal = function () {
             $scope.modalInstance.close();
         }
-        
-        
+
+        $scope.getAllUsers = function () {
+            if ($scope.SortAsc) {
+                $scope.getUsersWithSortAndPage($scope.key, 'ASC');
+            }
+            else {
+                $scope.getUsersWithSortAndPage($scope.key, 'DESC');
+            }
+        }
         
         
         //pagination - go to desired page
         $scope.goToPage = function () {
-            if ($scope.limit <= 0) {
+            if ($scope.skip <= 0) {
                 alert("Please input valid page")
             }
             else {
-                $scope.getOrderByPage();
+                if ($scope.skip == 1) {
+                    $scope.getAllUsers();
+                }
+                else {
+                    if ((($scope.skip - 1) * $scope.limit) < $scope.count) {
+                        $scope.getAllUsers();
+                    }
+                    else {
+                        $scope.users = [];
+                    }
+                }
             }
         }
         
@@ -119,14 +148,16 @@ angular.module('app')
         $scope.goToPrev = function () {
             if ($scope.skip > 1) {
                 $scope.skip--;
-                $scope.getOrderByPage();
+                $scope.getAllUsers();
             }
         }
         
         //pagination - go to next page
         $scope.goToNext = function () {
-            $scope.skip++;
-            $scope.getOrderByPage();
+            if (!$scope.lastPage) {
+                $scope.skip++;
+                $scope.getAllUsers();
+            }
         }
         
         //sort by User ID
@@ -146,14 +177,15 @@ angular.module('app')
         
         //sort by User ID
         $scope.sortBy = function (key) {
-                $scope.skip = 1;
-                if ($scope.SortAsc) {
-                    $scope.SortAsc = false;
-                    $scope.getUsersWithSortAndPage(key, 'DESC');
-                }
-                else {
-                    $scope.SortAsc = true;
-                    $scope.getUsersWithSortAndPage(key, 'ASC');
-                }
+            $scope.key = key;
+            $scope.skip = 1;
+            if ($scope.SortAsc) {
+                $scope.SortAsc = false;
+                $scope.getUsersWithSortAndPage(key, 'DESC');
             }
+            else {
+                $scope.SortAsc = true;
+                $scope.getUsersWithSortAndPage(key, 'ASC');
+            }
+        }
     })

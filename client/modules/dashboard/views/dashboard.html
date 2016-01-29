@@ -19,7 +19,7 @@
             <!-- small box -->
             <div class="small-box bg-yellow">
                 <div class="inner">
-                    <h3>{{users.length}}</h3>
+                    <h3>{{userCount}}</h3>
 
                     <p>Users</p>
                 </div>
@@ -68,8 +68,7 @@
                             <td class="">{{user.last_name}}</td>
                             <td class="">{{user.role_name}}</td>
                             <td class="">
-                                <button class="btn btn-default margin-15" title="Edit this field" data-toggle="modal" data-target="#myModal"
-                                ng-click="edit(user)"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-default margin-15" title="Edit this field" data-toggle="modal" data-target="#myModal" ng-click="edit(user)"><i class="fa fa-edit"></i></button>
                                 <button title="Delete this field" class="btn btn-default" data-toggle="modal" data-target="#myModal" ng-click="delete(user)"
                                 ng-disabled="user.username == username"><i class="fa fa-trash"></i></button>
                             </td>
@@ -77,15 +76,19 @@
                     </table>
                 </div>
                 <!-- /.box-body -->
-                <div class="box-footer clearfix">
-                    <ul class="pagination pagination-sm no-margin pull-right">
-                        <li><a href="#">&laquo;</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">&raquo;</a></li>
+                <form name="goToPageForm">
+                    <div class="box-footer clearfix" align="center">
+                        <input type="number" name="inputPage" min="1" ng-model="skip" class="go-to-input"></input><a href="" ng-click="goToPage()">Go</a>
+                    </div>
+                </form>
+                <div class="box-footer clearfix" align="center">
+                    <ul class="pagination pagination-sm no-margin">
+                        <li><a href="" ng-click="goToPrev()">&laquo;</a></li>
+                        <li><a href="">{{skip}}</a></li>
+                        <li><a href="" ng-click="goToNext()">&raquo;</a></li>
                     </ul>
                 </div>
+
             </div>
             <!-- /.box-body -->
         </div>
@@ -133,8 +136,7 @@
                         </div>
                         <div class="form-group">
                             <label>Username</label>
-                            <input type="text" name="username" ng-model="selected_user.username" class="form-control" placeholder="Username"
-                            ng-disabled="isUpdateUser">
+                            <input type="text" name="username" ng-model="selected_user.username" class="form-control" placeholder="Username" ng-disabled="isUpdateUser">
                             <span ng-show="addUpdateForm.username.$invalid && addUpdateForm.username.$dirty" class="error-color">Please input username</span>
                         </div>
                         <div class="form-group" ng-show="isAddUser">

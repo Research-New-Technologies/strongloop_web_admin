@@ -10,10 +10,7 @@ RoleMapping.belongsTo(Role, {foreignKey: 'roleId'});
 
     //create admin role, skip if already created
     Role.find({ name: 'admin' }, function (err, response) {
-        if (response.length > 0) {
-            console.log(response)
-        }
-        else {
+        if (response.length == 0) {
             Role.create({
                 name: 'admin'
             }, function (err, role) {
