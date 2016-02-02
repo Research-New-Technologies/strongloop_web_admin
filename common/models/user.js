@@ -283,7 +283,7 @@ module.exports = function (user) {
         var port = (user.app && user.app.settings.port);
         context.result.forEach(function (result) {
             user.findById(result.__data.id, { include: ['media', { relation: 'roleMapping', scope: { include: { relation: 'role' } } }] }, function (err, userResult) {
-                result.__data.role_name = userResult.__data.roleMapping[0].__data.role.name;
+                result.__data.roleName = userResult.__data.roleMapping[0].__data.role.name;
                 result.__data.profilePicture = 'http://'+host+':'+port+'/'+result.__data.profilePicture;
                 results.push(result);
                 if (results.length == context.result.length) {
