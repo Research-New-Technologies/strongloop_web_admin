@@ -58,7 +58,8 @@
                             <th><a href="" ng-click="sortBy('firstName')">First Name</a></th>
                             <th><a href="" ng-click="sortBy('lastName')">Last Name</a></th>
                             <th><a href="" ng-click="sortBy('roleId')">Role</a></th>
-                            <th>Profile Picture</a></th>
+                            <th>Profile Picture</a>
+                            </th>
                             <th>Actions</th>
                         </tr>
                         <tr ng-repeat="user in users">
@@ -68,7 +69,8 @@
                             <td class="">{{user.firstName}}</td>
                             <td class="">{{user.lastName}}</td>
                             <td class="">{{user.roleName}}</td>
-                            <td class=""><img ng-src="{{user.profilePicture}}" height="42" width="42"></img></td>
+                            <td class=""><img ng-src="{{user.profilePicture}}" height="42" width="42"></img>
+                            </td>
                             <td class="">
                                 <button class="btn btn-default margin-15" title="Edit this field" data-toggle="modal" data-target="#myModal" ng-click="edit(user)"><i class="fa fa-edit"></i></button>
                                 <button title="Delete this field" class="btn btn-default" data-toggle="modal" data-target="#myModal" ng-click="delete(user)"
@@ -118,54 +120,70 @@
                         <h4 align="center"> Do you want to delete this user?</h4>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" ng-model="selected_user.email" class="form-control" name="email" placeholder="Email" ng-disabled="true">
+                            <input type="email" ng-model="selectedUser.email" class="form-control" name="email" placeholder="Email" ng-disabled="true">
 
                         </div>
                         <div class="form-group">
                             <label>Username</label>
-                            <input type="text" ng-model="selected_user.username" name="username" class="form-control" placeholder="Username" ng-disabled="true">
+                            <input type="text" ng-model="selectedUser.username" name="username" class="form-control" placeholder="Username" ng-disabled="true">
                         </div>
 
                         <div align="center">
-                            <button type="submit" class="btn btn-default btn-delete" ng-click="deleteUser(selected_user)">Delete</button>
+                            <button type="submit" class="btn btn-default btn-delete" ng-click="deleteUser(selectedUser)">Delete</button>
                         </div>
                     </form>
                     <form class="signup-form" name="addUpdateForm" novalidate ng-show="!isDelete">
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" ng-model="selected_user.email" class="form-control" name="email" placeholder="Email" required>
+                            <input type="email" ng-model="selectedUser.email" class="form-control" name="email" placeholder="Email" required>
                             <span ng-show="addUpdateForm.email.$invalid && addUpdateForm.email.$dirty" class="error-color">Please valid email</span>
                         </div>
                         <div class="form-group">
                             <label>Username</label>
-                            <input type="text" name="username" ng-model="selected_user.username" class="form-control" placeholder="Username" ng-disabled="isUpdateUser">
+                            <input type="text" name="username" ng-model="selectedUser.username" class="form-control" placeholder="Username" ng-disabled="isUpdateUser">
                             <span ng-show="addUpdateForm.username.$invalid && addUpdateForm.username.$dirty" class="error-color">Please input username</span>
                         </div>
                         <div class="form-group" ng-show="isAddUser">
                             <label>Password</label>
-                            <input type="password" name="password" ng-model="selected_user.password" class="form-control" placeholder="Password" required>
+                            <input type="password" name="password" ng-model="selectedUser.password" class="form-control" placeholder="Password" required>
                             <span ng-show="addUpdateForm.password.$invalid && addUpdateForm.password.$dirty" class="error-color">Please input password</span>
                         </div>
                         <div class="form-group" ng-show="isAddUser">
                             <label>Password Confirmation</label>
-                            <input type="password" name="confirmPassword" ng-model="selected_user.confirmPassword" class="form-control" placeholder="Password"
+                            <input type="password" name="confirmPassword" ng-model="selectedUser.confirmPassword" class="form-control" placeholder="Password"
                             required>
-                            <span ng-show="selected_user.confirmPassword != selected_user.password && addUpdateForm.confirmPassword.$dirty"
-                            class="error-color">Password doesn't match</span>
+                            <span ng-show="selectedUser.confirmPassword != selectedUser.password && addUpdateForm.confirmPassword.$dirty" class="error-color">Password doesn't match</span>
                         </div>
                         <div class="form-group">
                             <label>First Name</label>
-                            <input type="text" name="first_name" ng-model="selected_user.first_name" class="form-control" placeholder="First Name" required>
-                            <span ng-show="addUpdateForm.first_name.$invalid && addUpdateForm.first_name.$dirty" class="error-color">Please input first name</span>
+                            <input type="text" name="firstName" ng-model="selectedUser.firstName" class="form-control" placeholder="First Name" required>
+                            <span ng-show="addUpdateForm.firstName.$invalid && addUpdateForm.firstName.$dirty" class="error-color">Please input first name</span>
                         </div>
                         <div class="form-group">
                             <label>Last Name</label>
-                            <input type="text" ng-model="selected_user.last_name" class="form-control" placeholder="Last Name">
+                            <input type="text" ng-model="selectedUser.lastName" class="form-control" placeholder="Last Name">
                         </div>
+                        <div class="form-group">
+                            <label align="left">Profile Picture</label>
+                            <br>
+                            <div align="center"><img ng-src="{{selectedUser.profilePicture}}"></img>
+                            </div>
+                        </div>
+                        <div class="form-inline" align="center">
+
+                            <div class="form-group">
+                                <input type="file" class="form-control" accept="image/*" placeholder="Image" ng-model-instant onchange="angular.element(this).scope().changePicture(this)"
+                                multiple>
+                            </div>
+                            <button type="submit" class="btn btn-default" ng-click="uploadImage(selectedUser)">Upload</button>
+                        </div>
+                        <br>
+
+
 
                         <div align="center">
-                            <button type="submit" class="btn btn-default btn-login" ng-click="updateUser(selected_user)" ng-show="isUpdateUser">Update User</button>
-                            <button type="submit" class="btn btn-default btn-login" ng-click="addUser(selected_user)" ng-show="isAddUser">Add User</button>
+                            <button type="submit" class="btn btn-default btn-login" ng-click="updateUser(selectedUser)" ng-show="isUpdateUser">Update User</button>
+                            <button type="submit" class="btn btn-default btn-login" ng-click="addUser(selectedUser)" ng-show="isAddUser">Add User</button>
                         </div>
                     </form>
                 </div>

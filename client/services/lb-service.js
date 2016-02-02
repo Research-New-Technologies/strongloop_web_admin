@@ -551,6 +551,33 @@ module.factory(
           method: "PUT"
         },
 
+        // INTERNAL. Use User.media.findById() instead.
+        "prototype$__findById__media": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/users/:id/media/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use User.media.destroyById() instead.
+        "prototype$__destroyById__media": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/users/:id/media/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use User.media.updateById() instead.
+        "prototype$__updateById__media": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/users/:id/media/:fk",
+          method: "PUT"
+        },
+
         /**
          * @ngdoc method
          * @name lbServices.User#prototype$__get__accessTokens
@@ -959,6 +986,31 @@ module.factory(
          */
         "prototype$__count__roleMapping": {
           url: urlBase + "/users/:id/roleMapping/count",
+          method: "GET"
+        },
+
+        // INTERNAL. Use User.media() instead.
+        "prototype$__get__media": {
+          isArray: true,
+          url: urlBase + "/users/:id/media",
+          method: "GET"
+        },
+
+        // INTERNAL. Use User.media.create() instead.
+        "prototype$__create__media": {
+          url: urlBase + "/users/:id/media",
+          method: "POST"
+        },
+
+        // INTERNAL. Use User.media.destroyAll() instead.
+        "prototype$__delete__media": {
+          url: urlBase + "/users/:id/media",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use User.media.count() instead.
+        "prototype$__count__media": {
+          url: urlBase + "/users/:id/media/count",
           method: "GET"
         },
 
@@ -1772,50 +1824,35 @@ module.factory(
     */
     R.modelName = "User";
 
+    /**
+     * @ngdoc object
+     * @name lbServices.User.media
+     * @header lbServices.User.media
+     * @object
+     * @description
+     *
+     * The object `User.media` groups methods
+     * manipulating `Media` instances related to `User`.
+     *
+     * Call {@link lbServices.User#media User.media()}
+     * to query all related instances.
+     */
 
-    return R;
-  }]);
-
-/**
- * @ngdoc object
- * @name lbServices.Container
- * @header lbServices.Container
- * @object
- *
- * @description
- *
- * A $resource object for interacting with the `Container` model.
- *
- * ## Example
- *
- * See
- * {@link http://docs.angularjs.org/api/ngResource.$resource#example $resource}
- * for an example of using this object.
- *
- */
-module.factory(
-  "Container",
-  ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
-    var R = Resource(
-      urlBase + "/containers/:id",
-      { 'id': '@id' },
-      {
 
         /**
          * @ngdoc method
-         * @name lbServices.Container#getContainers
-         * @methodOf lbServices.Container
+         * @name lbServices.User#media
+         * @methodOf lbServices.User
          *
          * @description
          *
-         * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
+         * Queries media of user.
          *
          * @param {Object=} parameters Request parameters.
          *
-         *   This method does not accept any parameters.
-         *   Supply an empty object or omit this argument altogether.
+         *  - `id` – `{*}` - User id
+         *
+         *  - `filter` – `{object=}` - 
          *
          * @param {function(Array.<Object>,Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -1829,25 +1866,302 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Container` object.)
+         * This usually means the response is a `Media` object.)
          * </em>
          */
-        "getContainers": {
-          isArray: true,
-          url: urlBase + "/containers",
-          method: "GET"
-        },
+        R.media = function() {
+          var TargetResource = $injector.get("Media");
+          var action = TargetResource["::get::user::media"];
+          return action.apply(R, arguments);
+        };
 
         /**
          * @ngdoc method
-         * @name lbServices.Container#createContainer
-         * @methodOf lbServices.Container
+         * @name lbServices.User.media#count
+         * @methodOf lbServices.User.media
          *
          * @description
          *
+         * Counts media of user.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        R.media.count = function() {
+          var TargetResource = $injector.get("Media");
+          var action = TargetResource["::count::user::media"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.User.media#create
+         * @methodOf lbServices.User.media
+         *
+         * @description
+         *
+         * Creates a new instance in media of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
          * <em>
-         * (The remote method definition does not provide any description.)
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
          * </em>
+         */
+        R.media.create = function() {
+          var TargetResource = $injector.get("Media");
+          var action = TargetResource["::create::user::media"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.User.media#createMany
+         * @methodOf lbServices.User.media
+         *
+         * @description
+         *
+         * Creates a new instance in media of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        R.media.createMany = function() {
+          var TargetResource = $injector.get("Media");
+          var action = TargetResource["::createMany::user::media"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.User.media#destroyAll
+         * @methodOf lbServices.User.media
+         *
+         * @description
+         *
+         * Deletes all media of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.media.destroyAll = function() {
+          var TargetResource = $injector.get("Media");
+          var action = TargetResource["::delete::user::media"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.User.media#destroyById
+         * @methodOf lbServices.User.media
+         *
+         * @description
+         *
+         * Delete a related item by id for media.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for media
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.media.destroyById = function() {
+          var TargetResource = $injector.get("Media");
+          var action = TargetResource["::destroyById::user::media"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.User.media#findById
+         * @methodOf lbServices.User.media
+         *
+         * @description
+         *
+         * Find a related item by id for media.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for media
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        R.media.findById = function() {
+          var TargetResource = $injector.get("Media");
+          var action = TargetResource["::findById::user::media"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.User.media#updateById
+         * @methodOf lbServices.User.media
+         *
+         * @description
+         *
+         * Update a related item by id for media.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - User id
+         *
+         *  - `fk` – `{*}` - Foreign key for media
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        R.media.updateById = function() {
+          var TargetResource = $injector.get("Media");
+          var action = TargetResource["::updateById::user::media"];
+          return action.apply(R, arguments);
+        };
+
+    return R;
+  }]);
+
+/**
+ * @ngdoc object
+ * @name lbServices.Media
+ * @header lbServices.Media
+ * @object
+ *
+ * @description
+ *
+ * A $resource object for interacting with the `Media` model.
+ *
+ * ## Example
+ *
+ * See
+ * {@link http://docs.angularjs.org/api/ngResource.$resource#example $resource}
+ * for an example of using this object.
+ *
+ */
+module.factory(
+  "Media",
+  ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
+    var R = Resource(
+      urlBase + "/media/:id",
+      { 'id': '@id' },
+      {
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#create
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Create a new instance of the model and persist it into the data source.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -1870,97 +2184,31 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Container` object.)
+         * This usually means the response is a `Media` object.)
          * </em>
          */
-        "createContainer": {
-          url: urlBase + "/containers",
+        "create": {
+          url: urlBase + "/media",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Container#destroyContainer
-         * @methodOf lbServices.Container
+         * @name lbServices.Media#createMany
+         * @methodOf lbServices.Media
          *
          * @description
          *
-         * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
+         * Create a new instance of the model and persist it into the data source.
          *
          * @param {Object=} parameters Request parameters.
          *
-         *  - `container` – `{string=}` - 
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
          *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
+         * @param {Object} postData Request data.
          *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * Data properties:
-         *
-         *  - `` – `{undefined=}` - 
-         */
-        "destroyContainer": {
-          url: urlBase + "/containers/:container",
-          method: "DELETE"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.Container#getContainer
-         * @methodOf lbServices.Container
-         *
-         * @description
-         *
-         * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `container` – `{string=}` - 
-         *
-         * @param {function(Object,Object)=} successCb
-         *   Success callback with two arguments: `value`, `responseHeaders`.
-         *
-         * @param {function(Object)=} errorCb Error callback with one argument:
-         *   `httpResponse`.
-         *
-         * @returns {Object} An empty reference that will be
-         *   populated with the actual data once the response is returned
-         *   from the server.
-         *
-         * <em>
-         * (The remote method definition does not provide any description.
-         * This usually means the response is a `Container` object.)
-         * </em>
-         */
-        "getContainer": {
-          url: urlBase + "/containers/:container",
-          method: "GET"
-        },
-
-        /**
-         * @ngdoc method
-         * @name lbServices.Container#getFiles
-         * @methodOf lbServices.Container
-         *
-         * @description
-         *
-         * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-         *
-         * @param {Object=} parameters Request parameters.
-         *
-         *  - `container` – `{string=}` - 
+         * This method expects a subset of model properties as request parameters.
          *
          * @param {function(Array.<Object>,Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -1974,31 +2222,32 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Container` object.)
+         * This usually means the response is a `Media` object.)
          * </em>
          */
-        "getFiles": {
+        "createMany": {
           isArray: true,
-          url: urlBase + "/containers/:container/files",
-          method: "GET"
+          url: urlBase + "/media",
+          method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Container#getFile
-         * @methodOf lbServices.Container
+         * @name lbServices.Media#upsert
+         * @methodOf lbServices.Media
          *
          * @description
          *
-         * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
+         * Update an existing model instance or insert a new one into the data source.
          *
          * @param {Object=} parameters Request parameters.
          *
-         *  - `container` – `{string=}` - 
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
          *
-         *  - `file` – `{string=}` - 
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
          *
          * @param {function(Object,Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -2012,30 +2261,26 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Container` object.)
+         * This usually means the response is a `Media` object.)
          * </em>
          */
-        "getFile": {
-          url: urlBase + "/containers/:container/files/:file",
-          method: "GET"
+        "upsert": {
+          url: urlBase + "/media",
+          method: "PUT"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Container#removeFile
-         * @methodOf lbServices.Container
+         * @name lbServices.Media#exists
+         * @methodOf lbServices.Media
          *
          * @description
          *
-         * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
+         * Check whether a model instance exists in the data source.
          *
          * @param {Object=} parameters Request parameters.
          *
-         *  - `container` – `{string=}` - 
-         *
-         *  - `file` – `{string=}` - 
+         *  - `id` – `{*}` - Model id
          *
          * @param {function(Object,Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -2049,23 +2294,259 @@ module.factory(
          *
          * Data properties:
          *
-         *  - `` – `{undefined=}` - 
+         *  - `exists` – `{boolean=}` - 
          */
-        "removeFile": {
-          url: urlBase + "/containers/:container/files/:file",
+        "exists": {
+          url: urlBase + "/media/:id/exists",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#findById
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Find a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         *  - `filter` – `{object=}` - Filter defining fields and include
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        "findById": {
+          url: urlBase + "/media/:id",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#find
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Find all instances of the model matched by filter from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `filter` – `{object=}` - Filter defining fields, where, include, order, offset, and limit
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        "find": {
+          isArray: true,
+          url: urlBase + "/media",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#findOne
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Find first instance of the model matched by filter from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `filter` – `{object=}` - Filter defining fields, where, include, order, offset, and limit
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        "findOne": {
+          url: urlBase + "/media/findOne",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#updateAll
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Update instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * The number of instances updated
+         */
+        "updateAll": {
+          url: urlBase + "/media/update",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#deleteById
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        "deleteById": {
+          url: urlBase + "/media/:id",
           method: "DELETE"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Container#upload
-         * @methodOf lbServices.Container
+         * @name lbServices.Media#count
+         * @methodOf lbServices.Media
          *
          * @description
          *
+         * Count instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        "count": {
+          url: urlBase + "/media/count",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#prototype$updateAttributes
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Update attributes for a model instance and persist it into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
          * <em>
-         * (The remote method definition does not provide any description.)
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
          * </em>
+         */
+        "prototype$updateAttributes": {
+          url: urlBase + "/media/:id",
+          method: "PUT"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#createChangeStream
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Create a change stream.
          *
          * @param {Object=} parameters Request parameters.
          *
@@ -2074,9 +2555,7 @@ module.factory(
          *
          * @param {Object} postData Request data.
          *
-         *  - `req` – `{object=}` - 
-         *
-         *  - `res` – `{object=}` - 
+         *  - `options` – `{object=}` - 
          *
          * @param {function(Object,Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -2090,33 +2569,93 @@ module.factory(
          *
          * Data properties:
          *
-         *  - `result` – `{object=}` - 
+         *  - `changes` – `{ReadableStream=}` - 
          */
-        "upload": {
-          url: urlBase + "/containers/:container/upload",
+        "createChangeStream": {
+          url: urlBase + "/media/change-stream",
           method: "POST"
         },
 
+        // INTERNAL. Use User.media.findById() instead.
+        "::findById::user::media": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/users/:id/media/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use User.media.destroyById() instead.
+        "::destroyById::user::media": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/users/:id/media/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use User.media.updateById() instead.
+        "::updateById::user::media": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/users/:id/media/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use User.media() instead.
+        "::get::user::media": {
+          isArray: true,
+          url: urlBase + "/users/:id/media",
+          method: "GET"
+        },
+
+        // INTERNAL. Use User.media.create() instead.
+        "::create::user::media": {
+          url: urlBase + "/users/:id/media",
+          method: "POST"
+        },
+
+        // INTERNAL. Use User.media.createMany() instead.
+        "::createMany::user::media": {
+          isArray: true,
+          url: urlBase + "/users/:id/media",
+          method: "POST"
+        },
+
+        // INTERNAL. Use User.media.destroyAll() instead.
+        "::delete::user::media": {
+          url: urlBase + "/users/:id/media",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use User.media.count() instead.
+        "::count::user::media": {
+          url: urlBase + "/users/:id/media/count",
+          method: "GET"
+        },
+      }
+    );
+
+
+
         /**
          * @ngdoc method
-         * @name lbServices.Container#download
-         * @methodOf lbServices.Container
+         * @name lbServices.Media#updateOrCreate
+         * @methodOf lbServices.Media
          *
          * @description
          *
-         * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
+         * Update an existing model instance or insert a new one into the data source.
          *
          * @param {Object=} parameters Request parameters.
          *
-         *  - `container` – `{string=}` - 
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
          *
-         *  - `file` – `{string=}` - 
+         * @param {Object} postData Request data.
          *
-         *  - `req` – `{object=}` - 
-         *
-         *  - `res` – `{object=}` - 
+         * This method expects a subset of model properties as request parameters.
          *
          * @param {function(Object,Object)=} successCb
          *   Success callback with two arguments: `value`, `responseHeaders`.
@@ -2128,27 +2667,114 @@ module.factory(
          *   populated with the actual data once the response is returned
          *   from the server.
          *
-         * This method returns no data.
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
          */
-        "download": {
-          url: urlBase + "/containers/:container/download/:file",
-          method: "GET"
-        },
-      }
-    );
+        R["updateOrCreate"] = R["upsert"];
 
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#update
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Update instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * The number of instances updated
+         */
+        R["update"] = R["updateAll"];
 
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#destroyById
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        R["destroyById"] = R["deleteById"];
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Media#removeById
+         * @methodOf lbServices.Media
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Media` object.)
+         * </em>
+         */
+        R["removeById"] = R["deleteById"];
 
 
     /**
     * @ngdoc property
-    * @name lbServices.Container#modelName
-    * @propertyOf lbServices.Container
+    * @name lbServices.Media#modelName
+    * @propertyOf lbServices.Media
     * @description
     * The name of the model represented by this $resource,
-    * i.e. `Container`.
+    * i.e. `Media`.
     */
-    R.modelName = "Container";
+    R.modelName = "Media";
 
 
     return R;

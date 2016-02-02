@@ -7,7 +7,7 @@ module.exports = function (user) {
     user.beforeRemote('create', function (context, userInstance, next) {
         context.req.body.createdDate = new Date();
         context.req.body.lastUpdated = new Date();
-        if(typeof(context.req.body.profilePicture) == 'undefined'){
+        if (typeof (context.req.body.profilePicture) == 'undefined') {
             context.req.body.profilePicture = 'storages/missing/missing-image.png';
         }
         var error = new Error();
@@ -204,7 +204,7 @@ module.exports = function (user) {
                 var port = (user.app && user.app.settings.port);
                 context.result.__data.user = userResult.__data;
                 context.result.__data.user.roleName = userResult.__data.roleMapping[0].__data.role.name;
-                context.result.__data.user.profilePicture = 'http://'+host+':'+port+'/'+userResult.profilePicture;
+                context.result.__data.user.profilePicture = 'http://' + host + ':' + port + '/' + userResult.profilePicture;
                 next();
             }
         })
@@ -250,6 +250,7 @@ module.exports = function (user) {
     });
     
     
+    
     //remote method - find users
     user.beforeRemote('find', function (context, userInstance, next) {
         var queryFilter = JSON.parse(context.req.query.filter);
@@ -284,7 +285,7 @@ module.exports = function (user) {
         context.result.forEach(function (result) {
             user.findById(result.__data.id, { include: ['media', { relation: 'roleMapping', scope: { include: { relation: 'role' } } }] }, function (err, userResult) {
                 result.__data.roleName = userResult.__data.roleMapping[0].__data.role.name;
-                result.__data.profilePicture = 'http://'+host+':'+port+'/'+result.__data.profilePicture;
+                result.__data.profilePicture = 'http://' + host + ':' + port + '/' + result.__data.profilePicture;
                 results.push(result);
                 if (results.length == context.result.length) {
                     context.result = results;

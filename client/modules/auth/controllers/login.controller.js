@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('LoginController', function ($scope, User, $state, $rootScope, LoopBackAuth, cfpLoadingBar, Container) {
+    .controller('LoginController', function ($scope, User, $state, $rootScope, LoopBackAuth, cfpLoadingBar) {
         $scope.user = {};
         $rootScope.isAdmin = true;
         

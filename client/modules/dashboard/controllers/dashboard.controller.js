@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('DashboardController', function ($scope, $state, $rootScope, $window, $route, $timeout, $modal, User) {
+    .controller('DashboardController', function ($scope, $state, $rootScope, $window, $route, $timeout, $modal, User, $base64, Media) {
         $scope.users = {};
         $rootScope.isAdmin = true;
         $scope.limit = 10;
@@ -16,7 +16,6 @@ angular.module('app')
             //call Web service to find User with filter parameters
             User.find({ filter: { limit: $scope.limit, skip: skip, order: orderBy + ' ' + type } }, function (response) {
                 $scope.users = response;
-                console.log(response[0].id)
                 //get total users in database
                 User.count(function (count) {
                     $scope.userCount = count.count;
@@ -37,7 +36,7 @@ angular.module('app')
         
         //delete user - open delete confirmation modal
         $scope.delete = function (user) {
-            $scope.selected_user = user;
+            $scope.selectedUser = user;
             $scope.modal_title = "Delete User Confirmation";
             $scope.isDelete = true;
             $scope.openModal();
@@ -45,7 +44,7 @@ angular.module('app')
         
         //edit user - open edit user modal
         $scope.edit = function (user) {
-            $scope.selected_user = user;
+            $scope.selectedUser = user;
             $scope.modal_title = "Update User";
             $scope.isDelete = false;
             $scope.isAddUser = false;
@@ -55,7 +54,7 @@ angular.module('app')
         
         //add user - open add user modal
         $scope.add = function () {
-            $scope.selected_user = {};
+            $scope.selectedUser = {};
             $scope.modal_title = "Add a new User";
             $scope.isDelete = false;
             $scope.isAddUser = true;
@@ -101,14 +100,14 @@ angular.module('app')
         
         //edit user - update to web service
         $scope.updateUser = function (user) {
-            User.prototype$updateAttributes({ id: user.id, email: user.email, username: user.username, first_name: user.first_name, last_name: user.last_name }, function (response) {
+            User.prototype$updateAttributes({ id: user.id, email: user.email, username: user.username, firstName: user.firstName, lastName: user.lastName }, function (response) {
                 alert("Successfully update the user")
                 $scope.modalInstance.close();
                 $scope.getAllUsers();
                 $window.location.reload();
             },
                 function (response) {
-                    alert(JSON.stringify(response))
+                    alert(JSON.stringify(response.message))
                 })
         }
         
@@ -144,7 +143,7 @@ angular.module('app')
             }
             else {
                 if ($scope.skip == 1) {
-                   $scope.getUsersWithSortAndPage($scope.key, 'ASC');
+                    $scope.getUsersWithSortAndPage($scope.key, 'ASC');
                 }
                 else {
                     if ((($scope.skip - 1) * $scope.limit) < $scope.count) {
@@ -201,4 +200,30 @@ angular.module('app')
                 $scope.getUsersWithSortAndPage(key, 'ASC');
             }
         }
-    })
+
+
+        $scope.changePicture = function (event) {
+            console.log(event.files)
+            var profilePicture = event.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $scope.prev_img = e.target.result;
+                $scope.selectedUser.profilePicture = e.target.result;
+                $scope.$apply();
+            };
+            reader.readAsDataURL(profilePicture);
+        }
+
+        $scope.uploadImage = function (user) {
+            console.log(user)
+            var media = {};
+            media.isProfilePicture = true;
+            media.userId = user.id;
+            media.data = user.profilePicture;
+            Media.create(media, function (mediaResponse) {
+                alert(JSON.stringify(mediaResponse))
+            });
+        }
+
+
+    });
