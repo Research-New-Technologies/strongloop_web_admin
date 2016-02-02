@@ -1,6 +1,6 @@
 angular.module('app')
     .controller('ResetPasswordController', function ($scope, User, $state, $rootScope, LoopBackAuth, $stateParams, $http, cfpLoadingBar) {
-        $http.defaults.headers.common['access_token'] = $stateParams.token;
+        $http.defaults.headers.common['accessToken'] = $stateParams.token;
         $scope.user = {};
         $rootScope.isAdmin = true; 
         $scope.save = function () {

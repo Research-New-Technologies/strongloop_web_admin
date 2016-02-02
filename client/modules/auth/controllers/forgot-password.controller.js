@@ -2,7 +2,7 @@ angular.module('app')
     .controller('ForgotPassowrdController', function ($scope, User, $state, $rootScope, LoopBackAuth, $timeout, cfpLoadingBar) {
         $scope.email = "";
         $rootScope.isAdmin = true;
-        $scope.reset_password = function () {
+        $scope.resetPassword = function () {
             cfpLoadingBar.start()
             if (!$scope.forgotPasswordForm.email.$invalid) {
                 User.resetPassword({ email: $scope.email }, function (response, headers) {

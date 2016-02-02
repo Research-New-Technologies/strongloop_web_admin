@@ -1,38 +1,43 @@
 {
-    "name": "user",
-    "base": "User",
-    "idInjection": true,
-    "options": {
-        "validateUpsert": true
+  "name": "user",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "Role": {
+      "type": "hasMany",
+      "model": "Role",
+      "foreignKey": "principalId",
+      "through": "RoleMapping"
     },
-    "properties": {},
-    "validations": [],
-    "relations": {
-        "Role": {
-            "type": "hasMany",
-            "model": "Role",
-            "foreignKey": "principalId",
-            "through": "RoleMapping"
-        },
-        "roleMapping": {
-            "type": "hasMany",
-            "model": "RoleMapping",
-            "foreignKey": "principalId"
-        },
-        "orders": {
-            "type": "hasMany",
-            "model": "order",
-            "foreignKey": "userId"
-        }
+    "roleMapping": {
+      "type": "hasMany",
+      "model": "RoleMapping",
+      "foreignKey": "principalId"
     },
-    "acls": [
-        {
-            "accessType": "*",
-            "principalType": "ROLE",
-            "principalId": "admin",
-            "permission": "ALLOW",
-            "model": "user"
-        }
-    ],
-    "methods": {}
+    "orders": {
+      "type": "hasMany",
+      "model": "order",
+      "foreignKey": "userId"
+    },
+    "media": {
+      "type": "hasMany",
+      "model": "media",
+      "foreignKey": "userId"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "model": "user"
+    }
+  ],
+  "methods": {}
 }

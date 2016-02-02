@@ -43,8 +43,8 @@
       "emailVerificationRequired": true
     }
   },
-  "container": {
-    "dataSource": "storage",
+  "media": {
+    "dataSource": "mongodb",
     "public": true
   }
 }

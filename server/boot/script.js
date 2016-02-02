@@ -1,53 +1,86 @@
 /* global verificationToken */
 module.exports = function (app) {
-    var User = app.models.user;
-    var Role = app.models.Role;
-    var RoleMapping = app.models.RoleMapping;
-    
-
-RoleMapping.belongsTo(User, {foreignKey: 'principalId'});
-RoleMapping.belongsTo(Role, {foreignKey: 'roleId'});
+    var user = app.models.user;
+    var role = app.models.Role;
+    var roleMapping = app.models.RoleMapping;
+    var fs = require('fs')
+    var path = require('path');
+    roleMapping.belongsTo(user, { foreignKey: 'principalId' });
+    roleMapping.belongsTo(role, { foreignKey: 'roleId' });
 
     //create admin role, skip if already created
-    Role.find({ name: 'admin' }, function (err, response) {
-        if (response.length == 0) {
-            Role.create({
+    role.find({ name: 'admin' }, function (err, roleAdminResults) {
+        if (roleAdminResults.length == 0) {
+            role.create({
                 name: 'admin'
-            }, function (err, role) {
-                if (err) throw err;
+            }, function (err, roleResult) {
+                if (err) return err;
 
-                User.create({ username: 'admin', email: 'admin@admin.com', first_name: 'admin', password: 'password', emailVerified: true }, function (err, user) {
+                user.create({
+                    username: 'admin',
+                    email: 'admin@admin.com',
+                    firstName: 'admin',
+                    lastName: 'admin',
+                    dateOfBirth: new Date(),
+                    createdDate: new Date(),
+                    lastUpdated: new Date(),
+                    phoneNumber: '0000000',
+                    address: 'current address',
+                    lastLogin: new Date(),
+                    password: 'password',
+                    emailVerified: true,
+                    profilePicture: 'storages/missing/missing-image.png'
+                }, function (err, userResult) {
                     if (err) {
-                        console.log("admin already created")
                     }
-                    else {     
-                        role.principals.create({
-                            principalType:RoleMapping.USER,
-                            principalId:user.id
-                        }, function(err, principal){
-                            
+                    else {
+                        roleResult.principals.create({
+                            principalType: roleMapping.USER,
+                            principalId: userResult.id
+                        }, function (err, principalResult) {
+
                         })
                     }
                 });
             });
 
-            Role.create({
+            role.create({
                 name: 'member'
-            }, function (err, role) {
-                User.create({ username: 'member', email: 'member@member.com', first_name: 'member', password: 'password', emailVerified: true }, function (err, user) {
+            }, function (err, roleResult) {
+                user.create({
+                    username: 'member',
+                    email: 'member@member.com',
+                    first_name: 'member',
+                    lastName: 'admin',
+                    dateOfBirth: new Date(),
+                    createdDate: new Date(),
+                    lastUpdated: new Date(),
+                    phoneNumber: '0000000',
+                    address: 'current address',
+                    lastLogin: new Date(),
+                    password: 'password',
+                    emailVerified: true,
+                    profilePicture: 'storages/missing/missing-image.png'
+                }, function (err, userResult) {
                     if (err) {
-                        console.log("member already created")
+
                     }
                     else {
-                        role.principals.create({
-                            principalType:RoleMapping.USER,
-                            principalId:user.id
-                        }, function(err, principal){
-                            
+                        roleResult.principals.create({
+                            principalType: roleMapping.USER,
+                            principalId: userResult.id
+                        }, function (err, principalResult) {
+
                         })
                     }
                 });
             });
         }
     })
+    
+    //crete 'storages folder if it doesn't exist
+    if (!fs.existsSync('storages')) {
+        fs.mkdirSync('storages', function (err) {
+        });
+    }
 };

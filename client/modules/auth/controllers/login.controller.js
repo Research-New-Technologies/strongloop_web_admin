@@ -1,37 +1,30 @@
 angular.module('app')
-    .controller('LoginController', function ($scope, User, $state, $rootScope, LoopBackAuth, cfpLoadingBar) {
+    .controller('LoginController', function ($scope, User, $state, $rootScope, LoopBackAuth, cfpLoadingBar, Container) {
         $scope.user = {};
         $rootScope.isAdmin = true;
-        // find by id
-        $scope.find_by_id = function (id) {
-            User.findById({ id: id }, function (user) {
-                window.localStorage.setItem('EMAIL', user.email);
-                window.localStorage.setItem('USER_NAME', user.username);
-                window.localStorage.setItem('FIRST_NAME', user.first_name);
-                $rootScope.username = window.localStorage.getItem('USER_NAME');
-                $state.go('dashboard');
-            }, function (error) {
-            });
-        }
         
         // login with email & password
         $scope.login = function () {
             cfpLoadingBar.start()
             if (!$scope.loginForm.email.$invalid && !$scope.loginForm.password.$invalid) {
                 User.login($scope.user, function (response) {
-                    if(response.role_name == 'member'){
+                    if (response.user.roleName == 'member') {
                         alert("You are not allowed to access this Web, please login using mobile Application")
                         window.localStorage.clear();
                     }
                     else {
-                        $rootScope.is_authenticated = true;
+
+                        $rootScope.isAuthenticated = true;
                         window.localStorage.setItem('IS_AUTHENTICATED', true);
                         window.localStorage.setItem('USER_ID', response.userId);
                         window.localStorage.setItem('TOKEN', response.id);
-                        $scope.find_by_id(response.userId); 
+                        window.localStorage.setItem('USER_DETAILS', JSON.stringify(response.user));
+                        
+                        $rootScope.user = response.user;
+                        $state.go('dashboard');
                     }
                     cfpLoadingBar.complete()
-                    
+
                 }, function (response) {
                     cfpLoadingBar.complete()
                     alert(response.data.error.message)
@@ -47,23 +40,22 @@ angular.module('app')
                 cfpLoadingBar.complete()
             }
         }
-
+   
         // signout
-        $scope.sign_out = function () {
+        $scope.signOut = function () {
             User.logout();
             window.localStorage.clear();
-            $rootScope.is_authenticated = false;
-            $rootScope.username = "";
+            $rootScope.isAuthenticated = false;
             $state.go("login")
         }
         
         // go to sign up screen
-        $scope.sign_up = function () {
+        $scope.signUp = function () {
             $state.go("sign-up");
         }
 
         // 
-        $scope.forgot_password = function () {
+        $scope.forgotPassword = function () {
             $state.go("forgot-password");
         }
     })

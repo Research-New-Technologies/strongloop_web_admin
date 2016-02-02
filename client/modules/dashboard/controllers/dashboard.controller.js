@@ -16,7 +16,7 @@ angular.module('app')
             //call Web service to find User with filter parameters
             User.find({ filter: { limit: $scope.limit, skip: skip, order: orderBy + ' ' + type } }, function (response) {
                 $scope.users = response;
-                
+                console.log(response[0].id)
                 //get total users in database
                 User.count(function (count) {
                     $scope.userCount = count.count;
@@ -33,7 +33,7 @@ angular.module('app')
         }
         
         //run this command when user open dashboard 
-        $scope.getUsersWithSortAndPage('roleId', 'ASC');
+        $scope.getUsersWithSortAndPage('Id', 'ASC');
         
         //delete user - open delete confirmation modal
         $scope.delete = function (user) {
@@ -65,19 +65,16 @@ angular.module('app')
         
         //add user - add to web service
         $scope.addUser = function (user) {
-            if ($scope.addUpdateForm.$invalid || user.password != user.password_confirmation) {
+            if ($scope.addUpdateForm.$invalid || user.password != user.confirmPassword) {
                 $scope.addUpdateForm.email.$dirty = true;
                 $scope.addUpdateForm.username.$dirty = true;
-                $scope.addUpdateForm.password_confirmation.$dirty = true;
+                $scope.addUpdateForm.confirmPassword.$dirty = true;
                 $scope.addUpdateForm.password.$dirty = true;
                 $scope.addUpdateForm.username.$dirty = true;
                 $scope.addUpdateForm.first_name.$dirty = true;
             }
             else {
-                var user_send_to_server = {};
-                angular.copy(user, user_send_to_server)
-                delete user_send_to_server.password_confirmation;
-                User.create(user_send_to_server, function (user) {
+                User.create(user, function (user) {
                     alert("Successfully add a new user");
                     $scope.getAllUsers();
                     $scope.modalInstance.close();
@@ -147,11 +144,11 @@ angular.module('app')
             }
             else {
                 if ($scope.skip == 1) {
-                    $scope.getAllUsers();
+                   $scope.getUsersWithSortAndPage($scope.key, 'ASC');
                 }
                 else {
                     if ((($scope.skip - 1) * $scope.limit) < $scope.count) {
-                        $scope.getAllUsers();
+                        $scope.getUsersWithSortAndPage($scope.key, 'ASC');
                     }
                     else {
                         $scope.users = [];

@@ -54,19 +54,21 @@
                         <tr>
                             <th><a href="" ng-click="sortBy('id')">ID</a></th>
                             <th><a href="" ng-click="sortBy('username')">Username</a></th>
-                            <th><a href="" ng-click="sortBy('username')">Email</a></th>
-                            <th><a href="" ng-click="sortBy('first_name')">First Name</a></th>
-                            <th><a href="" ng-click="sortBy('last_name')">Last Name</a></th>
+                            <th><a href="" ng-click="sortBy('email')">Email</a></th>
+                            <th><a href="" ng-click="sortBy('firstName')">First Name</a></th>
+                            <th><a href="" ng-click="sortBy('lastName')">Last Name</a></th>
                             <th><a href="" ng-click="sortBy('roleId')">Role</a></th>
+                            <th>Profile Picture</a></th>
                             <th>Actions</th>
                         </tr>
                         <tr ng-repeat="user in users">
                             <td class="col-fixed">{{user.id}}</td>
                             <td class="">{{user.username}}</td>
                             <td class="">{{user.email}}</td>
-                            <td class="">{{user.first_name}}</td>
-                            <td class="">{{user.last_name}}</td>
-                            <td class="">{{user.role_name}}</td>
+                            <td class="">{{user.firstName}}</td>
+                            <td class="">{{user.lastName}}</td>
+                            <td class="">{{user.roleName}}</td>
+                            <td class=""><img ng-src="{{user.profilePicture}}" height="42" width="42"></img></td>
                             <td class="">
                                 <button class="btn btn-default margin-15" title="Edit this field" data-toggle="modal" data-target="#myModal" ng-click="edit(user)"><i class="fa fa-edit"></i></button>
                                 <button title="Delete this field" class="btn btn-default" data-toggle="modal" data-target="#myModal" ng-click="delete(user)"
@@ -146,9 +148,9 @@
                         </div>
                         <div class="form-group" ng-show="isAddUser">
                             <label>Password Confirmation</label>
-                            <input type="password" name="password_confirmation" ng-model="selected_user.password_confirmation" class="form-control" placeholder="Password"
+                            <input type="password" name="confirmPassword" ng-model="selected_user.confirmPassword" class="form-control" placeholder="Password"
                             required>
-                            <span ng-show="selected_user.password_confirmation != selected_user.password && addUpdateForm.password_confirmation.$dirty"
+                            <span ng-show="selected_user.confirmPassword != selected_user.password && addUpdateForm.confirmPassword.$dirty"
                             class="error-color">Password doesn't match</span>
                         </div>
                         <div class="form-group">
