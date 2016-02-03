@@ -24,10 +24,5 @@
       "disableStackTrace": false
     }
   },
-  "legacyExplorer": false,
-  "cloudinary":{
-      "cloud_name":"dj3pkhemu",
-      "api_key":"998742656858924",
-      "api_secret":"jXj1QbBQ1TpzB9f6Fp6n4YSBl5A"
-  }
+  "legacyExplorer": false
 }
