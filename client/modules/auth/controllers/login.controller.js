@@ -8,21 +8,25 @@ angular.module('app')
             cfpLoadingBar.start()
             if (!$scope.loginForm.email.$invalid && !$scope.loginForm.password.$invalid) {
                 User.login($scope.user, function (response) {
-                    if (response.user.roleName == 'member') {
-                        alert("You are not allowed to access this Web, please login using mobile Application")
-                        window.localStorage.clear();
-                    }
-                    else {
+                    for (var i = 0; i < response.user.roleName.length; i++) {
+                        if (response.user.roleName[i].role.name == 'member') {
+                            alert("You are not allowed to access this Web, please login using mobile Application")
+                            window.localStorage.clear();
+                            break;
+                        }
+                        else if (response.user.roleName[i].role.name == 'admin') {
+                            $rootScope.isAuthenticated = true;
+                            window.localStorage.setItem('IS_AUTHENTICATED', true);
+                            window.localStorage.setItem('USER_ID', response.userId);
+                            window.localStorage.setItem('TOKEN', response.id);
+                            window.localStorage.setItem('USER_DETAILS', JSON.stringify(response.user));
 
-                        $rootScope.isAuthenticated = true;
-                        window.localStorage.setItem('IS_AUTHENTICATED', true);
-                        window.localStorage.setItem('USER_ID', response.userId);
-                        window.localStorage.setItem('TOKEN', response.id);
-                        window.localStorage.setItem('USER_DETAILS', JSON.stringify(response.user));
-                        
-                        $rootScope.user = response.user;
-                        $state.go('dashboard');
+                            $rootScope.user = response.user;
+                            $state.go('dashboard');
+                            break;
+                        }
                     }
+
                     cfpLoadingBar.complete()
 
                 }, function (response) {

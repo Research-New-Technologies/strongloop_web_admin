@@ -198,13 +198,13 @@ module.exports = function (user) {
 
     //when user has successfully logged, then add role name & profile picture
     user.afterRemote('login', function (context, userInstance, next) {
-        user.findById(context.result.__data.userId, { include: { relation: 'roleMapping', scope: { include: { relation: 'role' } } } }, function (err, userResult) {
-            if (userResult != null) {
+        var roleMapping = app.models.RoleMapping;
+        roleMapping.find({ include: { relation: 'role' }, where: { principalId: context.result.__data.userId } }, function (err, roleMappingResults) {
+            if (roleMappingResults.length > 0) {
                 var host = (user.app && user.app.settings.host);
                 var port = (user.app && user.app.settings.port);
-                context.result.__data.user = userResult.__data;
-                context.result.__data.user.roleName = userResult.__data.roleMapping[0].__data.role.name;
-                context.result.__data.user.profilePicture = 'http://' + host + ':' + port + '/' + userResult.profilePicture;
+                context.result.__data.user.roleName = roleMappingResults;
+                context.result.__data.user.profilePicture = 'http://' + host + ':' + port + '/' + context.result.__data.user.profilePicture;
                 next();
             }
         })
@@ -256,15 +256,18 @@ module.exports = function (user) {
         var queryFilter = JSON.parse(context.req.query.filter);
         var roleMapping = app.models.RoleMapping;
         var results = [];
-        
+        var host = (user.app && user.app.settings.host);
+        var port = (user.app && user.app.settings.port);
         //check if the query filter is roleId, then prevent to next, do query and return the results
         if (queryFilter.order == "roleId DESC" || queryFilter.order == "roleId ASC") {
             //use "include ['user','role'] to add user and role object into roleMapping"
             roleMapping.find({ limit: queryFilter.limit, skip: queryFilter.skip, order: queryFilter.order, include: ['user', 'role'] }, function (err, roleMappingResults) {
                 roleMappingResults.forEach(function (element, index, array) {
                     var user = element.__data.user.__data;
-                    user.role_name = element.__data.role.__data.name;
+                    user.roleName = element.__data.role.__data.name;
+                    user.profilePicture = 'http://' + host + ':' + port + '/' + user.profilePicture
                     results.push(user)
+                    
                     if (index == roleMappingResults.length - 1) {
                         return context.res.status(200).send(results);
                     }
@@ -279,20 +282,24 @@ module.exports = function (user) {
     
     //find users
     user.afterRemote('find', function (context, userInstance, next) {
-        var results = [];
+        var roleMapping = app.models.RoleMapping;
         var host = (user.app && user.app.settings.host);
         var port = (user.app && user.app.settings.port);
-        context.result.forEach(function (result) {
-            user.findById(result.__data.id, { include: ['media', { relation: 'roleMapping', scope: { include: { relation: 'role' } } }] }, function (err, userResult) {
-                result.__data.roleName = userResult.__data.roleMapping[0].__data.role.name;
-                result.__data.profilePicture = 'http://' + host + ':' + port + '/' + result.__data.profilePicture;
-                results.push(result);
-                if (results.length == context.result.length) {
-                    context.result = results;
+        context.result.forEach(function (result, index, array) {
+            result.__data.profilePicture = 'http://' + host + ':' + port + '/' + result.__data.profilePicture;
+            roleMapping.find({ include: { relation: 'role' }, where: { principalId: result.__data.id } }, function (err, roleMappingResults) {
+            if (roleMappingResults.length > 0) {
+                result.__data.roleName = [];
+                roleMappingResults.forEach(function (roleMappingResult) {
+                    result.__data.roleName.push(roleMappingResult.__data.role.__data.name)
+                   
+                })
+                
+                if (index == context.result.length - 1) {
                     next();
                 }
-
-            })
+            }
+        })            
         })
     })
   
