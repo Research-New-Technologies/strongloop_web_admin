@@ -9,8 +9,8 @@ module.exports = function (Media) {
         var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
         var response = {};
 
-        if (matches.length !== 3) {
-            return new Error('Invalid input string');
+        if (matches == null || matches.length !== 3) {
+            return null;
         }
 
         var fileType = matches[1].split('/');
@@ -88,7 +88,15 @@ module.exports = function (Media) {
                         
         //convert req body data to image
         var data = decodeBase64Image(context.req.body.data);
-                        
+        
+        if(data == null){
+           var error = new Error();
+                error.name = 'BAD_REQUEST'
+                error.status = 400;
+                error.message = 'Picture is not valid';
+                error.code = 'PICTURE_IS_NOT_VALID';
+                return next(error)
+        }                
         //generate unique ID
         var name = uuid.v1();
                         

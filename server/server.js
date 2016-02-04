@@ -20,21 +20,21 @@ app.start = function () {
 
 
 app.get('**', function (req, res, next) {
-    var url = path.join(__dirname, '..', req.url)
-    var isGetFile = req.url.includes("storages");
+   var url = path.join(__dirname, '..', req.url);
+    var isGetFile = req.url.indexOf("storage");
+    var isGetApi = req.url.indexOf("api");
     fs.exists(url, function (exists) {
-        if (exists && isGetFile) {
+        if (exists && isGetFile != -1) {
             // Do something
             res.sendFile(path.join(__dirname, '..', req.url))
         }
-        else if (!exists && isGetFile) {
-            console.log("exxx")
+        else if (!exists && isGetFile != -1) {
             res.sendFile(path.join(__dirname, '../storages/missing/missing-image.png'))
         }
         else {
-            next();
+            next()
         }
-    });
+    });    
 
 })
 // Bootstrap the application, configure models, datasources and middleware.

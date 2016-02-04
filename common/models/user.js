@@ -258,7 +258,9 @@ module.exports = function (user) {
                 context.result.__data.user = userResult.__data;
                 context.result.__data.user.roleName = userResult.__data.roleMapping[0].__data.role.name;
                 context.result.__data.user.profilePicture = 'http://' + host + ':' + port + '/' + userResult.profilePicture;
-                next();
+                delete context.result.__data.user.password;
+                delete context.result.__data.user.roleMapping;
+                return context.res.status(200).send(context.result);
             }
         })
     })
@@ -362,7 +364,7 @@ module.exports = function (user) {
                     
                     //add role name
                     user.roleName = element.__data.role.__data.name;
-                    
+                    delete user.password;
                     //add profile host and port to profile picture url
                     user.profilePicture = 'http://' + host + ':' + port + '/' + user.profilePicture
                     results.push(user)
@@ -388,7 +390,7 @@ module.exports = function (user) {
         
         //looping for every item of results
         context.result.forEach(function (result, index, array) {
-            
+            delete  result.__data.password;
             //add host and port to the profile picture url
             result.__data.profilePicture = 'http://' + host + ':' + port + '/' + result.__data.profilePicture;
             roleMapping.find({ include: { relation: 'role' }, where: { principalId: result.__data.id } }, function (err, roleMappingResults) {
@@ -396,6 +398,7 @@ module.exports = function (user) {
                     result.__data.roleName = [];
                     roleMappingResults.forEach(function (roleMappingResult) {
                         //add role name
+                        
                         result.__data.roleName.push(roleMappingResult.__data.role.__data.name)
 
                     })

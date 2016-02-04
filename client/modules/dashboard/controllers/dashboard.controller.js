@@ -203,26 +203,34 @@ angular.module('app')
 
 
         $scope.changePicture = function (event) {
-            console.log(event.files)
             var profilePicture = event.files[0];
             var reader = new FileReader();
             reader.onload = function (e) {
                 $scope.prev_img = e.target.result;
                 $scope.selectedUser.profilePicture = e.target.result;
+                $scope.isProfilePictureChange = true;
                 $scope.$apply();
             };
             reader.readAsDataURL(profilePicture);
         }
 
         $scope.uploadImage = function (user) {
-            console.log(user)
-            var media = {};
-            media.isProfilePicture = true;
-            media.userId = user.id;
-            media.data = user.profilePicture;
-            Media.create(media, function (mediaResponse) {
-                alert(JSON.stringify(mediaResponse))
-            });
+            if ($scope.isProfilePictureChange) {
+                console.log(user)
+                var media = {};
+                media.isProfilePicture = true;
+                media.userId = user.id;
+                media.data = user.profilePicture;
+                Media.create(media, function (mediaResponse) {
+                    alert(JSON.stringify(mediaResponse))
+                }, function(error){
+                    alert(JSON.stringify(error.data.error.message))
+                });
+            }
+            else {
+                $scope.isProfilePictureChange = false;
+            }
+
         }
 
 
