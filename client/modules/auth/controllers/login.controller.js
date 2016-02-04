@@ -9,12 +9,12 @@ angular.module('app')
             if (!$scope.loginForm.email.$invalid && !$scope.loginForm.password.$invalid) {
                 User.login($scope.user, function (response) {
                     for (var i = 0; i < response.user.roleName.length; i++) {
-                        if (response.user.roleName[i].role.name == 'member') {
+                        if (response.user.roleName == 'member') {
                             alert("You are not allowed to access this Web, please login using mobile Application")
                             window.localStorage.clear();
                             break;
                         }
-                        else if (response.user.roleName[i].role.name == 'admin') {
+                        else if (response.user.roleName == 'admin') {
                             $rootScope.isAuthenticated = true;
                             window.localStorage.setItem('IS_AUTHENTICATED', true);
                             window.localStorage.setItem('USER_ID', response.userId);

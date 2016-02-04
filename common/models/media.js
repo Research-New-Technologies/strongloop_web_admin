@@ -31,7 +31,6 @@ module.exports = function (Media) {
         accessToken.findById(context.req.headers.authorization, function (err, accessTokenResult) {
             if (accessTokenResult != null) {
                 var accessTokenRes = accessTokenResult;
-                var userId = context.req.body.userId;
                 accessTokenResult.validate(function (err, isValid) {
                     if (isValid) {
 
@@ -96,8 +95,6 @@ module.exports = function (Media) {
         //save file into storage
         fs.writeFile('storages/' + userId + '/' + name + data.format, data.data, function (err) {
             if (err) return console.log(err);
-
-
             var media = {};
             media.url = 'storages/' + userId + '/' + name + data.format;
             media.userId = userId;
@@ -107,7 +104,6 @@ module.exports = function (Media) {
                             
             //save file information into database
             Media.create(media, function (err, res) {
-
                 if (context.req.body.isProfilePicture) {
                     user.findById(userId, function (err, userObject) {
                         userObject.profilePicture = 'storages/' + userId + '/' + name + data.format;

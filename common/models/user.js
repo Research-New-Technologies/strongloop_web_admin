@@ -251,13 +251,13 @@ module.exports = function (user) {
 
     //when user has successfully logged, then add role name & profile picture
     user.afterRemote('login', function (context, userInstance, next) {
-        var roleMapping = app.models.RoleMapping;
-        user.find({ include: { relation: 'role' }, where: { principalId: context.result.__data.userId } }, function (err, roleMappingResults) {
-            if (roleMappingResults.length > 0) {
+        user.findById(context.result.__data.userId,{include:{relation:'roleMapping', scope:{include: { relation: 'role' }}}}, function (err, userResult) {
+            if (userResult != null) {
                 var host = (user.app && user.app.settings.host);
                 var port = (user.app && user.app.settings.port);
-                context.result.__data.user.roleName = roleMappingResults;
-                context.result.__data.user.profilePicture = 'http://' + host + ':' + port + '/' + context.result.__data.user.profilePicture;
+                context.result.__data.user = userResult.__data;
+                context.result.__data.user.roleName = userResult.__data.roleMapping[0].__data.role.name;
+                context.result.__data.user.profilePicture = 'http://' + host + ':' + port + '/' + userResult.profilePicture;
                 next();
             }
         })
