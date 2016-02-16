@@ -11,13 +11,13 @@ module.exports = function (app) {
     
     //create a relation from roleMapping to role
     roleMapping.belongsTo(role, { foreignKey: 'roleId' });
-
+    var env = process.env.NODE_ENV;
+    console.log('node environment:' + env)
     //create admin role, skip if already created
     role.find(function (err, roleAdminResults) {
-        
+    
         //when there is no any role, then create the default admin and member user
         if (roleAdminResults.length == 0) {
-      
             //create a admin role
             role.create({
                 name: 'admin'
@@ -43,6 +43,15 @@ module.exports = function (app) {
                     if (err) {
                     }
                     else {
+
+                        if (!fs.existsSync('storages/' + userResult.id)) {
+                            fs.mkdirSync('storages/' + userResult.id, function (err) {
+                                console.log(err)
+                            });
+                        }
+                        
+                        
+                        
                         //make admin user as an admin
                         roleResult.principals.create({
                             principalType: roleMapping.USER,
@@ -63,7 +72,7 @@ module.exports = function (app) {
                 user.create({
                     username: 'member',
                     email: 'member@member.com',
-                    first_name: 'member',
+                    firstName: 'member',
                     lastName: 'admin',
                     dateOfBirth: new Date(),
                     createdDate: new Date(),
@@ -79,6 +88,14 @@ module.exports = function (app) {
 
                     }
                     else {
+                        
+                        if (!fs.existsSync('storages/' + userResult.id)) {
+                            fs.mkdirSync('storages/' + userResult.id, function (err) {
+                                console.log(err)
+                            });
+                        }
+                        
+                        
                         //make member user as a member
                         roleResult.principals.create({
                             principalType: roleMapping.USER,

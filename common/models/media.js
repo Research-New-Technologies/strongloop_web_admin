@@ -118,7 +118,7 @@ module.exports = function (Media) {
                         userObject.save();
 
                         var response = {};
-                        response.message = "Image has Successfully uploaded";
+                        response.message = 'Image has Successfully uploaded';
                         response.image_url = userObject.profilePicture;
                         response.id = userObject.id;
 
@@ -127,13 +127,13 @@ module.exports = function (Media) {
                 }
                 else {
                     var response = {};
-                    response.message = "Image has Successfully uploaded";
-                    response.image_url = res.url;
+                    response.message = 'Image has Successfully uploaded';
+                    response.imageUrl = res.url;
                     response.id = userId;
 
                     return context.res.status(200).send(response);
-                }
+                };
             });
-        })
-    }
+        });
+    };
 };

@@ -14,41 +14,37 @@
     ]
   },
   "User": {
-    "dataSource": "memory",
+    "dataSource": "mongodb",
     "public": false
   },
   "AccessToken": {
-    "dataSource": "memory",
+    "dataSource": "mongodb",
     "public": false
   },
   "ACL": {
-    "dataSource": "memory",
+    "dataSource": "mongodb",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "memory",
+    "dataSource": "mongodb",
     "public": false
   },
   "Role": {
-    "dataSource": "memory",
+    "dataSource": "mongodb",
     "public": false
   },
   "Email": {
     "dataSource": "emailDs"
   },
   "user": {
-    "dataSource": "memory",
+    "dataSource": "mongodb",
     "public": true,
     "options": {
       "emailVerificationRequired": true
     }
   },
   "media": {
-    "dataSource": "memory",
-    "public": true
-  },
-  "location": {
-    "dataSource": "memory",
+    "dataSource": "mongodb",
     "public": true
   }
 }

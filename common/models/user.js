@@ -113,7 +113,6 @@ module.exports = function (user) {
 
                 //if there is no current user with same email address
                 else {
-       
                     //check whether access token is valid or not
                     accessToken.findForRequest(context.req, {}, function (aux, accessTokenResult) {
                         
@@ -138,7 +137,7 @@ module.exports = function (user) {
                                         userRequest.createdDate = new Date();
                                         user.lastUpdated = new Date();
                                         userRequest.emailVerified = true;
-                                
+                                        delete userRequest.confirmPassword;
                                         //create a new admin
                                         user.create(userRequest, function (err, userResult) {
                                             //error occured when create a new admin
@@ -162,7 +161,7 @@ module.exports = function (user) {
                                                     if (err) {
                                                         return next(err);
                                                     }
-                                                    return context.res.sendStatus(202);
+                                                    return context.res.status(200).send(userResult);
                                                 })
                                             }
                                         });
@@ -229,6 +228,7 @@ module.exports = function (user) {
        
     //send error response when login proccess is failed
     user.afterRemoteError('login', function (context, next) {
+        console.log(context.error.stack)
         delete context.error.stack;
         if (context.error.code == 'LOGIN_FAILED_EMAIL_NOT_VERIFIED') {
             context.error.message = "Please verify your email before login"
@@ -251,7 +251,7 @@ module.exports = function (user) {
 
     //when user has successfully logged, then add role name & profile picture
     user.afterRemote('login', function (context, userInstance, next) {
-        user.findById(context.result.__data.userId,{include:{relation:'roleMapping', scope:{include: { relation: 'role' }}}}, function (err, userResult) {
+        user.findById(context.result.__data.userId, { include: { relation: 'roleMapping', scope: { include: { relation: 'role' } } } }, function (err, userResult) {
             if (userResult != null) {
                 var host = (user.app && user.app.settings.host);
                 var port = (user.app && user.app.settings.port);
@@ -316,7 +316,7 @@ module.exports = function (user) {
                                     userResult.updateAttribute('password', context.req.body.password, function (err, userUpdateResult) {
                                         if (err) return context.res.sendStatus(404);
                                         console.log('> password reset processed successfully');
-                                        return context.res.sendStatus(202);
+                                        return context.res.sendStatus(200);
                                     });
                                 });
 
@@ -347,20 +347,22 @@ module.exports = function (user) {
     user.beforeRemote('find', function (context, userInstance, next) {
         
         //get filter query from the request
-        var queryFilter = JSON.parse(context.req.query.filter);
-       
-        var roleMapping = app.models.RoleMapping;
-        var results = [];
+        var queryFilter = {};
+        if (typeof (context.req.query.filter) != 'undefined') {
+            queryFilter = JSON.parse(context.req.query.filter);
+
+            var roleMapping = app.models.RoleMapping;
+            var results = [];
+
+            var host = (user.app && user.app.settings.host);
+            var port = (user.app && user.app.settings.port);
         
-        var host = (user.app && user.app.settings.host);
-        var port = (user.app && user.app.settings.port);
-        
-        //check if the query filter is roleId, then prevent to next, do query and return the results
-        if (queryFilter.order == "roleId DESC" || queryFilter.order == "roleId ASC") {
-            //use "include ['user','role'] to add user and role object into roleMapping"
-            roleMapping.find({ limit: queryFilter.limit, skip: queryFilter.skip, order: queryFilter.order, include: ['user', 'role'] }, function (err, roleMappingResults) {
-                roleMappingResults.forEach(function (element, index, array) {
-                    var user = element.__data.user.__data;
+            //check if the query filter is roleId, then prevent to next, do query and return the results
+            if (queryFilter.order == "roleId DESC" || queryFilter.order == "roleId ASC") {
+                //use "include ['user','role'] to add user and role object into roleMapping"
+                roleMapping.find({ limit: queryFilter.limit, skip: queryFilter.skip, order: queryFilter.order, include: ['user', 'role'] }, function (err, roleMappingResults) {
+                    roleMappingResults.forEach(function (element, index, array) {
+                        var user = element.__data.user.__data;
                     
                     //add role name
                     user.roleName = element.__data.role.__data.name;
@@ -369,17 +371,24 @@ module.exports = function (user) {
                     user.profilePicture = 'http://' + host + ':' + port + '/' + user.profilePicture
                     results.push(user)
                     
-                    //when the looping has done
-                    if (index == roleMappingResults.length - 1) {
-                        return context.res.status(200).send(results);
-                    }
+                        //when the looping has done
+                        if (index == roleMappingResults.length - 1) {
+                            return context.res.status(200).send(results);
+                        }
+                    });
                 });
-            });
+            }
+            //when query filter is not roleId, pass it
+            else {
+                next();
+            }
         }
-        //when query filter is not roleId, pass it
         else {
             next();
         }
+
+
+
     })
     
     //find users

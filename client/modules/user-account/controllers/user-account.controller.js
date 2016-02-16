@@ -1,13 +1,14 @@
 angular.module('app')
-    .controller('DashboardController', function ($scope, $state, $rootScope, $window, $route, $timeout, $modal, User, $base64, Media) {
+    .controller('UserAccountController', function ($scope, $state, $rootScope, $window, $route, $timeout, $modal, User, $base64, Media) {
         $scope.users = {};
         $rootScope.isAdmin = true;
-        $scope.limit = 10;
+        $scope.limit = 6;
         $scope.skip = 1;
         $scope.key = 'id';
         $scope.SortAsc = true;
         $scope.userCount = 0;
         
+
         //get users with order by and also "DESC or ASC"
         $scope.getUsersWithSortAndPage = function (orderBy, type) {
             //calculate how many users that will be skiped
@@ -26,8 +27,9 @@ angular.module('app')
                         $scope.lastPage = false;
                     }
                 })
-            }, function (err) {
-                alert(JSON.stringify(err))
+            }, function (errorResponse) {
+                $scope.message = errorResponse.data.error.message;
+                $scope.openModal();
             })
         }
         
@@ -36,24 +38,19 @@ angular.module('app')
         
         //delete user - open delete confirmation modal
         $scope.delete = function (user) {
-            $scope.selectedUser = user;
-            $scope.modal_title = "Delete User Confirmation";
-            $scope.isDelete = true;
-            $scope.openModal();
+            vm.deletedUser = user;
+            $scope.openDeleteConfirmationModal();
         }
         
         //edit user - open edit user modal
         $scope.edit = function (user) {
-            $scope.selectedUser = user;
-            $scope.modal_title = "Update User";
-            $scope.isDelete = false;
-            $scope.isAddUser = false;
-            $scope.isUpdateUser = true;
-            $scope.openModal();
+            $state.go('edit-user-account');
+            $rootScope.editedUser = user;
         }
         
         //add user - open add user modal
         $scope.add = function () {
+            $state.go('add-user-account');
             $scope.selectedUser = {};
             $scope.modal_title = "Add a new User";
             $scope.isDelete = false;
@@ -62,63 +59,34 @@ angular.module('app')
             $scope.openModal();
         }
         
-        //add user - add to web service
-        $scope.addUser = function (user) {
-            if ($scope.addUpdateForm.$invalid || user.password != user.confirmPassword) {
-                $scope.addUpdateForm.email.$dirty = true;
-                $scope.addUpdateForm.username.$dirty = true;
-                $scope.addUpdateForm.confirmPassword.$dirty = true;
-                $scope.addUpdateForm.password.$dirty = true;
-                $scope.addUpdateForm.username.$dirty = true;
-                $scope.addUpdateForm.first_name.$dirty = true;
-            }
-            else {
-                User.create(user, function (user) {
-                    alert("Successfully add a new user");
-                    $scope.getAllUsers();
-                    $scope.modalInstance.close();
-                    $window.location.reload();
-                }, function (response) {
-                    alert(JSON.stringify(response.data.error.message))
-                });
-
-            }
-        }
-        
         //delete user - delete to web service
-        $scope.deleteUser = function (user) {
-            User.destroyById({ id: user.id }, function (response) {
+        $scope.deleteUser = function () {
+            User.destroyById({ id: $scope.vm.deletedUser.id }, function (response) {
                 $scope.users = [];
-                alert("Successfully delete the user")
-                $scope.modalInstance.close();
-                $scope.getAllUsers();
                 $window.location.reload();
-            }, function (response) {
-                alert(JSON.stringify(response))
+            }, function (errorResponse) {
+                $scope.message = errorResponse.data.error.message;
+                $scope.openModal();
             })
         }
-        
-        //edit user - update to web service
-        $scope.updateUser = function (user) {
-            User.prototype$updateAttributes({ id: user.id, email: user.email, username: user.username, firstName: user.firstName, lastName: user.lastName }, function (response) {
-                alert("Successfully update the user")
-                $scope.modalInstance.close();
-                $scope.getAllUsers();
-                $window.location.reload();
-            },
-                function (response) {
-                    alert(JSON.stringify(response.message))
-                })
-        }
-        
+                
         //open modal function
         $scope.openModal = function () {
             $scope.modalInstance = $modal.open({
                 templateUrl: 'modal.html',
-                controller: 'DashboardController',
+                controller: 'UserAccountController',
                 scope: $scope
             })
         }
+        
+        $scope.openDeleteConfirmationModal = function () {
+            $scope.modalInstance = $modal.open({
+                templateUrl: 'deleteModal.html',
+                controller: 'UserAccountController',
+                scope: $scope
+            })
+        }
+        
         
         //when user click close modal button
         $scope.closeModal = function () {
@@ -139,14 +107,15 @@ angular.module('app')
         //pagination - go to desired page
         $scope.goToPage = function () {
             if ($scope.skip <= 0) {
-                alert("Please input valid page")
+                $scope.message = "Please input valid page";
+                $scope.openModal();
             }
             else {
                 if ($scope.skip == 1) {
                     $scope.getUsersWithSortAndPage($scope.key, 'ASC');
                 }
                 else {
-                    if ((($scope.skip - 1) * $scope.limit) < $scope.count) {
+                    if ((($scope.skip - 1) * $scope.limit) < $scope.userCount) {
                         $scope.getUsersWithSortAndPage($scope.key, 'ASC');
                     }
                     else {
@@ -201,37 +170,56 @@ angular.module('app')
             }
         }
 
+        //set the UI form
+        var vm = this;
+        vm.user = {};
+        vm.deletedUser = {};
+        vm.deletedUserFields = [
+            {
+                key: 'email',
+                type: 'input',
+                templateOptions: {
+                    type: 'email',
+                    label: 'Email address',
+                    placeholder: 'Enter email',
+                    disabled: true
 
-        $scope.changePicture = function (event) {
-            var profilePicture = event.files[0];
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $scope.prev_img = e.target.result;
-                $scope.selectedUser.profilePicture = e.target.result;
-                $scope.isProfilePictureChange = true;
-                $scope.$apply();
-            };
-            reader.readAsDataURL(profilePicture);
-        }
+                }
+            },
+            {
+                key: 'username',
+                type: 'input',
+                templateOptions: {
+                    type: 'text',
+                    label: 'Username',
+                    placeholder: 'Enter username',
+                    disabled: true
 
-        $scope.uploadImage = function (user) {
-            if ($scope.isProfilePictureChange) {
-                console.log(user)
-                var media = {};
-                media.isProfilePicture = true;
-                media.userId = user.id;
-                media.data = user.profilePicture;
-                Media.create(media, function (mediaResponse) {
-                    alert(JSON.stringify(mediaResponse))
-                }, function(error){
-                    alert(JSON.stringify(error.data.error.message))
-                });
+                }
             }
-            else {
-                $scope.isProfilePictureChange = false;
+        ];
+
+        vm.userFields = [
+            {
+                key: 'email',
+                type: 'input',
+                templateOptions: {
+                    type: 'email',
+                    label: 'Email address',
+                    placeholder: 'Enter email',
+                    required: true
+
+                }
+            },
+            {
+                key: 'password',
+                type: 'input',
+                templateOptions: {
+                    type: 'password',
+                    label: 'Password',
+                    placeholder: 'Password',
+                    required: true
+                }
             }
-
-        }
-
-
+        ];
     });

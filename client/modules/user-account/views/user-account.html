@@ -1,12 +1,12 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Dashboard
+        User Account
         <small>Control panel</small>
       </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Dashboard</li>
+        <li class="active">User Account</li>
     </ol>
 </section>
 
@@ -104,87 +104,19 @@
 
 </section>
 <!-- /.content -->
-<script type="text/ng-template" id="modal.html">
-    <!-- Modal -->
+<script type="text/ng-template" id="deleteModal.html">
     <div tabindex="-1" role="dialog">
         <div class="modal-dialog">
-
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"></button>
-                    <h4 class="modal-title">{{modal_title}}</h4>
+                    <h4 class="modal-title">Delete User Confirmation</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="signup-form" name="deleteUserForm" ng-show="isDelete">
-                        <h4 align="center"> Do you want to delete this user?</h4>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" ng-model="selectedUser.email" class="form-control" name="email" placeholder="Email" ng-disabled="true">
-
-                        </div>
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" ng-model="selectedUser.username" name="username" class="form-control" placeholder="Username" ng-disabled="true">
-                        </div>
-
-                        <div align="center">
-                            <button type="submit" class="btn btn-default btn-delete" ng-click="deleteUser(selectedUser)">Delete</button>
-                        </div>
-                    </form>
-                    <form class="signup-form" name="addUpdateForm" novalidate ng-show="!isDelete">
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" ng-model="selectedUser.email" class="form-control" name="email" placeholder="Email" required>
-                            <span ng-show="addUpdateForm.email.$invalid && addUpdateForm.email.$dirty" class="error-color">Please valid email</span>
-                        </div>
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" name="username" ng-model="selectedUser.username" class="form-control" placeholder="Username" ng-disabled="isUpdateUser">
-                            <span ng-show="addUpdateForm.username.$invalid && addUpdateForm.username.$dirty" class="error-color">Please input username</span>
-                        </div>
-                        <div class="form-group" ng-show="isAddUser">
-                            <label>Password</label>
-                            <input type="password" name="password" ng-model="selectedUser.password" class="form-control" placeholder="Password" required>
-                            <span ng-show="addUpdateForm.password.$invalid && addUpdateForm.password.$dirty" class="error-color">Please input password</span>
-                        </div>
-                        <div class="form-group" ng-show="isAddUser">
-                            <label>Password Confirmation</label>
-                            <input type="password" name="confirmPassword" ng-model="selectedUser.confirmPassword" class="form-control" placeholder="Password"
-                            required>
-                            <span ng-show="selectedUser.confirmPassword != selectedUser.password && addUpdateForm.confirmPassword.$dirty" class="error-color">Password doesn't match</span>
-                        </div>
-                        <div class="form-group">
-                            <label>First Name</label>
-                            <input type="text" name="firstName" ng-model="selectedUser.firstName" class="form-control" placeholder="First Name" required>
-                            <span ng-show="addUpdateForm.firstName.$invalid && addUpdateForm.firstName.$dirty" class="error-color">Please input first name</span>
-                        </div>
-                        <div class="form-group">
-                            <label>Last Name</label>
-                            <input type="text" ng-model="selectedUser.lastName" class="form-control" placeholder="Last Name">
-                        </div>
-                        <div class="form-group">
-                            <label align="left">Profile Picture</label>
-                            <br>
-                            <div align="center"><img ng-src="{{selectedUser.profilePicture}}"></img>
-                            </div>
-                        </div>
-                        <div class="form-inline" align="center">
-
-                            <div class="form-group">
-                                <input type="file" class="form-control" accept="image/*" placeholder="Image" ng-model-instant onchange="angular.element(this).scope().changePicture(this)"
-                                multiple>
-                            </div>
-                            <button type="submit" class="btn btn-default" ng-click="uploadImage(selectedUser)">Upload</button>
-                        </div>
-                        <br>
-
-
-
-                        <div align="center">
-                            <button type="submit" class="btn btn-default btn-login" ng-click="updateUser(selectedUser)" ng-show="isUpdateUser">Update User</button>
-                            <button type="submit" class="btn btn-default btn-login" ng-click="addUser(selectedUser)" ng-show="isAddUser">Add User</button>
-                        </div>
+                    <form novalidate>
+                        <formly-form model="vm.deletedUser" fields="vm.deletedUserFields" form="vm.deletedUserForm">
+                            <button type="submit" class="btn btn-default btn-delete" ng-click="deleteUser()">Delete</button>
+                        </formly-form>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -192,6 +124,26 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="modal.html">
+    <div tabindex="-1" role="dialog">
+        <div class="modal-popup-dialog">
+            <div class="modal-content" align="center">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                    <h4 class="modal-title" align="center">Alert</h4>
+                </div>
+                <div class="modal-body">
+                    {{message}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" ng-click="closeModal()">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 </script>

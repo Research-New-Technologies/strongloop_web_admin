@@ -1,10 +1,10 @@
 {
-  "memory": {
-    "name": "memory",
+  "db": {
+    "name": "db",
     "connector": "memory"
   },
   "mongodb": {
-    "database": "web_admin_template",
+    "database": "web_admin_test",
     "name": "mongodb",
     "connector": "mongodb"
   },

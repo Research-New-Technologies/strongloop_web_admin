@@ -60,7 +60,7 @@
     <script src="lib/AdminLTE/plugins/fastclick/fastclick.js"></script>
     <!-- AdminLTE App -->
     <script src="lib/AdminLTE/dist/js/app.min.js"></script>
-   
+
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <!--<script src="lib/AdminLTE/dist/js/pages/dashboard.js"></script>-->
     <!-- AdminLTE for demo purposes -->
@@ -75,7 +75,10 @@
     <!--library js-->
 
     <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="lib/api-check/dist/api-check.js"></script>
     <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-formly/dist/formly.js"></script>
+    <script src="lib/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap.js"></script>
     <script src="lib/angular-resource/angular-resource.js"></script>
     <script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="lib/angular-animate/angular-animate.js"></script>
@@ -87,7 +90,8 @@
     <link rel='stylesheet' href='lib/angular-loading-bar/build/loading-bar.min.css' type='text/css' media='all' />
     <script type='text/javascript' src='lib/angular-loading-bar/build/loading-bar.min.js'></script>
     <script src="lib/angular-base64/angular-base64.js"></script>
-
+    <script src="lib/pdfjs-bower/dist/compatibility.js"></script>
+    
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini" ng-app="app" ng-cloak>
@@ -96,9 +100,9 @@
             <!-- Logo -->
             <a href="" class="logo" ng-show="isAdmin">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>W</b>A</span>
+                <span class="logo-mini"><b>C</b>N</span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>Web</b> Admin</span>
+                <span class="logo-lg"><b>Company</b> Name</span>
             </a>
             <a href="" class="logo" ng-show="!isAdmin">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -115,11 +119,11 @@
 
                 <div class="navbar-custom-menu" ng-show="isAuthenticated">
                     <ul class="nav navbar-nav">
-                        
+
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="" class="dropdown-toggle" data-toggle="dropdown">
-                                <img ng-src="{{user.profilePicture}}"  class="user-image" alt="User Image">
+                                <img ng-src="{{user.profilePicture}}" class="user-image" alt="User Image">
                                 <span class="hidden-xs">{{user.username}}</span>
                             </a>
                             <ul class="dropdown-menu">
@@ -141,7 +145,7 @@
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
-                                    
+
                                     <div class="pull-right" ng-controller="LoginController">
                                         <a href="" class="btn btn-default btn-flat" ng-click="signOut()">Sign out</a>
                                     </div>
@@ -181,11 +185,21 @@
                 <ul class="sidebar-menu" ng-controller="MenuController">
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="active">
-                        <a href="" ng-click="goToDashboard()">
-                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                        <a href="" ng-click="goToUserAccount()">
+                            <i class="fa fa-dashboard"></i> <span>User Account</span>
                         </a>
                     </li>
-                  
+                    <li>
+                        <a href="" ng-click="goToUpload()">
+                            <i class="fa fa-dashboard"></i> <span>Upload File</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="goToGenerateReport()">
+                            <i class="fa fa-dashboard"></i> <span>Generate Report</span>
+                        </a>
+                    </li>
+
                 </ul>
             </section>
             <!-- /.sidebar -->
@@ -220,8 +234,12 @@
     <script src="modules/auth/controllers/forgot-password.controller.js"></script>
     <script src="modules/auth/controllers/reset-password.controller.js"></script>
     <script src="modules/auth/controllers/confirmation.controller.js"></script>
-    <script src="modules/dashboard/controllers/dashboard.controller.js"></script>
+    <script src="modules/user-account/controllers/user-account.controller.js"></script>
+    <script src="modules/user-account/controllers/add-user-account.controller.js"></script>
+    <script src="modules/user-account/controllers/edit-user-account.controller.js"></script>
     <script src="modules/menu/controllers/menu.controller.js"></script>
+    <script src="modules/generate-report/controllers/generate-report.controller.js"></script>
+    <script src="modules/upload-file/controllers/upload-file.controller.js"></script>
 </body>
 
 </html>

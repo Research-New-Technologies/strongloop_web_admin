@@ -1,0 +1,36 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Generate Report
+        <small>Control panel</small>
+      </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Generate Report</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="form-inline" align="center">
+                        <button type="submit" class="btn btn-default" ng-click="generate()">Generate PDF report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div>
+                <embed embed-src="{{content}}" src="{{content}}" type="application/pdf" style="width: 100%; height: 70vh;"></embed>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+</div>
+</section>

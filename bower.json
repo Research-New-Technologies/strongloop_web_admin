@@ -19,7 +19,7 @@
     "angular-resource": "~1.4.8",
     "angular-ui-router": "~0.2.15",
     "bootstrap": "~3.3.6",
-    "angular": "~1.4.8",
+    "angular": "~1.5.0",
     "AdminLTE": "admin-lte#~2.3.2",
     "components-font-awesome": "~4.5.0",
     "Ionicons": "ionicons#~2.0.1",
@@ -31,6 +31,9 @@
     "angular-bootstrap": "~0.14.3",
     "ngInfiniteScroll": "~1.2.1",
     "angular-tablescroll": "~1.0.1",
-    "angular-base64": "~2.0.5"
+    "angular-base64": "~2.0.5",
+    "api-check": "~7.5.5",
+    "angular-formly": "~7.3.9",
+    "angular-formly-templates-bootstrap": "~6.2.0"
   }
 }

@@ -1,13 +1,13 @@
 angular.module('app')
-    .controller('LoginController', function ($scope, User, $state, $rootScope, LoopBackAuth, cfpLoadingBar) {
-        $scope.user = {};
+    .controller('LoginController', function ($scope, User, $state, $rootScope, LoopBackAuth, cfpLoadingBar, $modal) {
         $rootScope.isAdmin = true;
         
         // login with email & password
         $scope.login = function () {
             cfpLoadingBar.start()
-            if (!$scope.loginForm.email.$invalid && !$scope.loginForm.password.$invalid) {
-                User.login($scope.user, function (response) {
+            if (!$scope.vm.userForm.$invalid) {
+                User.login($scope.vm.user, function (response) {
+                    for (var i = 0; i < response.user.roleName.length; i++) {
                         if (response.user.roleName == 'member') {
                             alert("You are not allowed to access this Web, please login using mobile Application")
                             window.localStorage.clear();
@@ -19,27 +19,27 @@ angular.module('app')
                             window.localStorage.setItem('USER_ID', response.userId);
                             window.localStorage.setItem('TOKEN', response.id);
                             window.localStorage.setItem('USER_DETAILS', JSON.stringify(response.user));
-console.log(response)
                             $rootScope.user = response.user;
-                            $state.go('dashboard');
-                      
+                            $state.go('user-account');
+                            break;
                         }
-                    
-
+                    }
                     cfpLoadingBar.complete()
-
                 }, function (response) {
+                    $scope.message = response.data.error.message;
                     cfpLoadingBar.complete()
-                    alert(response.data.error.message)
+                    $scope.openModal();
                 })
             }
             else {
-                if (!$scope.loginForm.email.$dirty) {
-                    $scope.loginForm.email.$dirty = true;
+                if (!$scope.vm.userForm.formly_1_input_email_0.$dirty) {
+                    $scope.vm.userForm.formly_1_input_email_0.$dirty = true;
                 }
-                if (!$scope.loginForm.password.$dirty) {
-                    $scope.loginForm.password.$dirty = true;
+                if (!$scope.vm.userForm.formly_1_input_password_1.$dirty) {
+                    $scope.vm.userForm.formly_1_input_password_1.$dirty = true;
                 }
+                $scope.message = "please fill the required fields";
+                $scope.openModal();
                 cfpLoadingBar.complete()
             }
         }
@@ -61,4 +61,47 @@ console.log(response)
         $scope.forgotPassword = function () {
             $state.go("forgot-password");
         }
+
+        //open modal function
+        $scope.openModal = function () {
+            $scope.modalInstance = $modal.open({
+                templateUrl: 'modal.html',
+                controller: 'LoginController',
+                scope: $scope
+            })
+        }
+        
+        //when user click close modal button
+        $scope.closeModal = function () {
+            $scope.modalInstance.close();
+        }
+
+
+        //set the UI form
+        var vm = this;
+        vm.user = {};
+        
+        vm.userFields = [
+            {
+                key: 'email',
+                type: 'input',
+                templateOptions: {
+                    type: 'email',
+                    label: 'Email address',
+                    placeholder: 'Enter email',
+                required: true
+                    
+                }
+            },
+            {
+                key: 'password',
+                type: 'input',
+                templateOptions: {
+                    type: 'password',
+                    label: 'Password',
+                    placeholder: 'Password',
+                    required: true
+                }
+            }
+        ];
     })
