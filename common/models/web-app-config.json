@@ -1,0 +1,50 @@
+{
+  "name": "webAppConfig",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "webName": {
+      "type": "string",
+      "required": true
+    },
+    "companyName": {
+      "type": "string",
+      "required": true
+    },
+    "initial": {
+      "type": "string",
+      "required": true
+    },
+    "webVersion": {
+      "type": "string",
+      "required": true
+    },
+    "disableSignUp": {
+      "type": "boolean",
+      "required": true
+    },
+    "disableResetPassword": {
+      "type": "boolean",
+      "required": true
+    },
+    "disableForgotPassword": {
+      "type": "boolean",
+      "required": true
+    },
+    "copyright": {
+      "type": "string",
+      "required": true
+    },
+    "formDefinition": {
+      "type": "object",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

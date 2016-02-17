@@ -1,12 +1,13 @@
 angular.module('app')
-    .controller('GenerateReportController', function ($scope, Location, $sce) {
-
+    .controller('GenerateReportController', function ($scope, Location, $sce, CommonService) {
+        CommonService.setActiveMenu("generate-report").then(function (res) { })
         $scope.generate = function () {
             Location.generate(function (generateResponse) {
                 $scope.content = generateResponse.url;
                 $scope.isGenerateReport = true;
             }, function (responseError) {
-                alert(responseError.data.error.name)
+                CommonService.callPopup(responseError.data.error.message).then(function (response) {
+                });
             })
         }
     })

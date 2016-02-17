@@ -1,5 +1,7 @@
 angular.module('app')
-    .controller('UserAccountController', function ($scope, $state, $rootScope, $window, $route, $timeout, $modal, User, $base64, Media) {
+    .controller('UserAccountController', function ($scope, $state, $rootScope, $window, $route, $timeout, $modal, User, $base64, Media, CommonService) {
+
+       
         $scope.users = {};
         $rootScope.isAdmin = true;
         $scope.limit = 6;
@@ -8,6 +10,7 @@ angular.module('app')
         $scope.SortAsc = true;
         $scope.userCount = 0;
         
+        CommonService.setActiveMenu("user-account").then(function(res) {})
 
         //get users with order by and also "DESC or ASC"
         $scope.getUsersWithSortAndPage = function (orderBy, type) {
@@ -28,8 +31,13 @@ angular.module('app')
                     }
                 })
             }, function (errorResponse) {
-                $scope.message = errorResponse.data.error.message;
-                $scope.openModal();
+                console.log(errorResponse)
+                CommonService.logout().then(function (response) {
+                    CommonService.callPopup(errorResponse.data.error.message).then(function (response) {
+                });
+                }, function (params) {
+                })
+
             })
         }
         
@@ -78,7 +86,7 @@ angular.module('app')
                 scope: $scope
             })
         }
-        
+
         $scope.openDeleteConfirmationModal = function () {
             $scope.modalInstance = $modal.open({
                 templateUrl: 'deleteModal.html',

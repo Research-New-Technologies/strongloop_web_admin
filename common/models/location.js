@@ -6,6 +6,9 @@ module.exports = function (Location) {
     var fs = require('fs')
     // Decoding base-64 image
     function decodeBase64Image(base64String) {
+        if(typeof(base64String) == 'undefined'){
+            return null;
+        }
         var matches = base64String.match(/data:application\/vnd\.openxmlformats\-officedocument\.spreadsheetml\.sheet;base64,/);
         if (matches != null) {
             var dataString = data = base64String.replace('data:application\/vnd\.openxmlformats\-officedocument\.spreadsheetml\.sheet;base64,', '');
@@ -40,8 +43,6 @@ module.exports = function (Location) {
                             })
 
                             resultJson.push(object);
-                            console.log(records.length);
-                            console.log(resultJson.length);
                             if (records.length - 1 == resultJson.length) {
                                 var returnResponse = {};
                                 returnResponse.status = 200;
@@ -55,6 +56,14 @@ module.exports = function (Location) {
                 })
             });
 
+        }
+        else {
+            var error = new Error();
+                                    error.name = 'Bad Request'
+                                    error.status = 400;
+                                    error.message = 'Bad Request';
+                                    error.code = 'BAD REQUEST';
+                                    return next(error);
         }
     });
 
@@ -184,10 +193,8 @@ module.exports = function (Location) {
         resultReport.printStructure();
 
         resultReport.render(function (err, name) {
-            var host = (Location.app && Location.app.settings.host);
-            var port = (Location.app && Location.app.settings.port);
             var generatedFile = {};
-            generatedFile.url = 'http://' + host + ':' + port + '/' + name;
+            generatedFile.url = name;
             return context.res.status(200).send(generatedFile);
         }, function (err) {
             console.log(err);

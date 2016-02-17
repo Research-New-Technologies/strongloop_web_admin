@@ -1,57 +1,29 @@
 angular.module('app')
-    .controller('ForgotPassowrdController', function ($scope, User, $state, $rootScope, LoopBackAuth, $timeout, cfpLoadingBar, $modal) {
-        $scope.email = "";
-        $rootScope.isAdmin = true;
+    .controller('ForgotPassowrdController', function ($scope, User, $state, cfpLoadingBar, CommonService, $rootScope) {
         $scope.resetPassword = function () {
             cfpLoadingBar.start()
             if (!$scope.vm.forgotPasswordForm.$invalid) {
                 User.resetPassword({ email: $scope.vm.forgotPassword.email }, function (response, headers) {
-                    $scope.message = "Please check your email address to reset your password";
-                    $scope.openModal();
-                    cfpLoadingBar.complete();
+                    CommonService.callPopup("Please check your email address to reset your password").then(function (response) {
+                        $state.go('login');
+                        cfpLoadingBar.complete();
+                    });
+
                 }, function (response) {
-                    cfpLoadingBar.complete();
-                    $scope.message = response.data.error.message;
-                    $scope.openModal();
+                    CommonService.callPopup($scope.message = response.data.error.message).then(function (response) {
+                        cfpLoadingBar.complete();
+                    });
                 });
             }
             else {
-                $scope.vm.forgotPasswordForm.formly_1_input_email_0.$dirty = true;
-                $scope.message = 'please fill the required field';
-                $scope.openModal();
-                cfpLoadingBar.complete();
+                CommonService.callPopup("please fill the required field").then(function (response) {
+                    cfpLoadingBar.complete();
+                });
             }
-        }
-        
-        //open modal function
-        $scope.openModal = function () {
-            $scope.modalInstance = $modal.open({
-                templateUrl: 'modal.html',
-                controller: 'LoginController',
-                scope: $scope
-            })
-        }
-        
-        //when user click close modal button
-        $scope.closeModal = function () {
-            $scope.modalInstance.close();
         }
         
         //set the UI form
         var vm = this;
         vm.forgotPassword = {};
-
-        vm.forgotPasswordFields = [
-            {
-                key: 'email',
-                type: 'input',
-                templateOptions: {
-                    type: 'email',
-                    label: 'Email address',
-                    placeholder: 'Enter email',
-                    required: true
-
-                }
-            }
-        ];
+        vm.forgotPasswordFields = $rootScope.webAppConfig.formDefinition.forgotPasswordFields;
     })

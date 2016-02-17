@@ -256,8 +256,9 @@ module.exports = function (user) {
                 var host = (user.app && user.app.settings.host);
                 var port = (user.app && user.app.settings.port);
                 context.result.__data.user = userResult.__data;
+                context.result.__data.user.fullName = context.result.__data.user.firstName + ' ' + context.result.__data.user.lastName;
                 context.result.__data.user.roleName = userResult.__data.roleMapping[0].__data.role.name;
-                context.result.__data.user.profilePicture = 'http://' + host + ':' + port + '/' + userResult.profilePicture;
+                context.result.__data.user.profilePicture = userResult.profilePicture;
                 delete context.result.__data.user.password;
                 delete context.result.__data.user.roleMapping;
                 return context.res.status(200).send(context.result);
@@ -368,7 +369,7 @@ module.exports = function (user) {
                     user.roleName = element.__data.role.__data.name;
                     delete user.password;
                     //add profile host and port to profile picture url
-                    user.profilePicture = 'http://' + host + ':' + port + '/' + user.profilePicture
+                    user.profilePicture = user.profilePicture
                     results.push(user)
                     
                         //when the looping has done
@@ -394,14 +395,12 @@ module.exports = function (user) {
     //find users
     user.afterRemote('find', function (context, userInstance, next) {
         var roleMapping = app.models.RoleMapping;
-        var host = (user.app && user.app.settings.host);
-        var port = (user.app && user.app.settings.port);
         
         //looping for every item of results
         context.result.forEach(function (result, index, array) {
             delete  result.__data.password;
             //add host and port to the profile picture url
-            result.__data.profilePicture = 'http://' + host + ':' + port + '/' + result.__data.profilePicture;
+            result.__data.profilePicture = result.__data.profilePicture;
             roleMapping.find({ include: { relation: 'role' }, where: { principalId: result.__data.id } }, function (err, roleMappingResults) {
                 if (roleMappingResults.length > 0) {
                     result.__data.roleName = [];

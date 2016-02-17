@@ -50,5 +50,9 @@
   "location": {
     "dataSource": "memory",
     "public": true
+  },
+  "webAppConfig": {
+    "dataSource": "memory",
+    "public": true
   }
 }

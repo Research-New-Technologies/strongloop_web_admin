@@ -2,6 +2,7 @@
 module.exports = function (app) {
     var user = app.models.user;
     var role = app.models.Role;
+    var webClientConfig = app.models.webAppConfig;
     var roleMapping = app.models.RoleMapping;
     var fs = require('fs')
     var path = require('path');
@@ -88,7 +89,7 @@ module.exports = function (app) {
 
                     }
                     else {
-                        
+
                         if (!fs.existsSync('storages/' + userResult.id)) {
                             fs.mkdirSync('storages/' + userResult.id, function (err) {
                                 console.log(err)
@@ -114,4 +115,86 @@ module.exports = function (app) {
         fs.mkdirSync('storages', function (err) {
         });
     }
+
+    webClientConfig.find(function (err, webClientConfigResult) {
+        console.log(webClientConfigResult);
+        if (webClientConfigResult.length == 0) {
+            var webConfig = {
+                webName: "Web Application",
+                companyName: "Web",
+                initial: "M W",
+                webVersion:"0.0.2",
+                disableSignUp: true,
+                disableResetPassword: true,
+                disableForgotPassword: true,
+                copyright: "2016",
+                formDefinition: {
+                    forgotPasswordFields: [
+                        {
+                            key: 'email',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'email',
+                                label: 'Email address',
+                                placeholder: 'Enter email',
+                                required: true
+                            }
+                        }
+                    ],
+                    loginFields: [
+                        {
+                            key: 'email',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'email',
+                                label: 'Email address',
+                                placeholder: 'Enter email',
+                                required: true
+
+                            }
+                        },
+                        {
+                            key: 'password',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'password',
+                                label: 'Password',
+                                placeholder: 'Password',
+                                required: true
+                            }
+                        }
+                    ],
+                    resetPasswordFields: [
+                        {
+                            key: 'password',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'password',
+                                label: 'New Password',
+                                placeholder: 'Enter new password',
+                                required: true
+
+                            }
+                        },
+                        {
+                            key: 'confirmPassword',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'password',
+                                label: 'Confirm new password',
+                                placeholder: 'Confirm new password',
+                                required: true
+                            }
+                        }
+                    ]
+                }
+            }
+            
+            
+            webClientConfig.create(webConfig, function(err, webClientConfigCreateResult){
+                console.log(webClientConfigCreateResult)
+            })
+        }
+    })
+
 };

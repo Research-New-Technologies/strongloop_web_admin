@@ -21,7 +21,8 @@ angular.module('app')
       .state('reset-password', {
         url: '/reset-password?password&token&email&id',
         templateUrl: 'modules/auth/views/reset-password.html',
-        controller: 'ResetPasswordController'
+        controller: 'ResetPasswordController',
+        controllerAs: 'vm'
       })
       .state('user-account', {
         url: '/user-account',
@@ -76,10 +77,21 @@ angular.module('app')
   
     
   }])
-  .run(function($rootScope, $state){
+  .run(function($rootScope, $state, WebAppConfig, $http){
          
     $rootScope.$on("$stateChangeStart", function (event, next, next_state, prev, prev_state) {
-        if(next.isAuthenticatedView){
+        if(typeof($rootScope.webAppConfig) == 'undefined'){
+            event.preventDefault();
+
+            $rootScope.url = next.name;
+              WebAppConfig.find(function (res) {
+                $rootScope.webAppConfig = res[0];
+                $state.go($rootScope.url);
+                        
+              });
+        }
+        else {
+            if(next.isAuthenticatedView){
             var token  = window.localStorage.getItem('TOKEN');
             if (!token){
                 event.preventDefault();
@@ -87,7 +99,14 @@ angular.module('app')
             }
         }
         else {
-             window.localStorage.clear();
+            var token  = window.localStorage.getItem('TOKEN');
+            
+            if (token!=null){
+                event.preventDefault();
+            }
+
+        }
+            
         }
     });
   });
