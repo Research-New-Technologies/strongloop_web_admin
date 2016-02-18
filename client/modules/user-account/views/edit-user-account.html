@@ -34,8 +34,9 @@
             <!-- ./col -->
             <div class="add-user-form" align="left">
                 <form novalidate>
-                    <formly-form model="vm.editedUser" fields="vm.editedUserFields" form="vm.editedUserForm">
-                        <button type="submit" class="btn btn-default btn-login" ng-click="editUser()">Edit User</button>
+                    <formly-form model="vm.editedUser" fields="vm.editUserFields" form="vm.editUserForm">
+                        <button type="submit" class="btn btn-success btn-login" ng-click="editUser()">Update User</button>
+                        <button type="submit" class="btn btn-default btn-login" ng-click="cancel()">Cancel</button>
                     </formly-form>
                 </form>
             </div>

@@ -148,7 +148,7 @@
                                 <li class="user-footer">
 
                                     <div class="pull-right" ng-controller="LoginController">
-                                        <a href="" class="btn btn-default btn-flat" ng-click="signOut()">Sign out</a>
+                                        <a href="" class="btn btn-warning btn-flat" ng-click="signOut()">Sign out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -261,7 +261,7 @@
                         {{popup.message}}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" ng-click="closeModal()">Close</button>
+                        <button type="button" class="btn btn-primary" ng-click="closeModal()">Close</button>
                     </div>
                 </div>
             </div>
@@ -276,10 +276,10 @@
                         <h4 class="modal-title" align="center">Instruction</h4>
                     </div>
                     <div class="modal-body" align="left">
-                        <pre style="margin:-10px">{{popup.instructionMessage}}</pre>
+                        <pre style="margin:-10px">{{popup.instructionMessage}} <a ng-href="{{popup.instructionLink}}" ng-click="closeModal()">{{popup.instructionLinkText}}</a></pre>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" ng-click="closeModal()">Close</button>
+                        <button type="button" class="btn btn-primary" ng-click="closeModal()">Close</button>
                     </div>
                 </div>
             </div>

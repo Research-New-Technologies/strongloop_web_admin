@@ -40,6 +40,7 @@ angular.module('app')
             deferred.resolve(true);
             return deferred.promise;
         }
+        
 
         this.setUser = function (userId, token, userInfo) {
             var deferred = $q.defer();

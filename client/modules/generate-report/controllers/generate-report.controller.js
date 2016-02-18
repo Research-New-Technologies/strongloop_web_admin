@@ -1,16 +1,28 @@
 angular.module('app')
-    .controller('GenerateReportController', function ($scope, Location, $sce, CommonService) {
+    .controller('GenerateReportController', function ($scope, Location, $sce, CommonService, $rootScope, $modal, $location) {
         CommonService.setActiveMenu("generate-report").then(function (res) { })
         $scope.generate = function () {
             Location.generate(function (generateResponse) {
                 $scope.content = generateResponse.url;
                 $scope.isGenerateReport = true;
             }, function (responseError) {
-                CommonService.callPopup(responseError.data.error.message).then(function (response) {
-                });
+
+                $rootScope.popup.instructionLinkText = 'page';
+                $rootScope.popup.instructionLink = '/#/upload-file';
+                $rootScope.popup.instructionMessage = "You don't have any data to be generated.\nTo generate a PDF report on this page, please import the report's data on this";
+                $scope.openModal();
+            })
+        }
+    
+        //open modal function
+        $scope.openModal = function () {
+            $rootScope.modalInstance = $modal.open({
+                templateUrl: 'popup-instruction-message.html'
             })
         }
     })
+
+
 
     .directive('embedSrc', function () {
         return {

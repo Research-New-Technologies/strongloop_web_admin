@@ -354,9 +354,6 @@ module.exports = function (user) {
 
             var roleMapping = app.models.RoleMapping;
             var results = [];
-
-            var host = (user.app && user.app.settings.host);
-            var port = (user.app && user.app.settings.port);
         
             //check if the query filter is roleId, then prevent to next, do query and return the results
             if (queryFilter.order == "roleId DESC" || queryFilter.order == "roleId ASC") {
@@ -365,12 +362,12 @@ module.exports = function (user) {
                     roleMappingResults.forEach(function (element, index, array) {
                         var user = element.__data.user.__data;
                     
-                    //add role name
-                    user.roleName = element.__data.role.__data.name;
-                    delete user.password;
-                    //add profile host and port to profile picture url
-                    user.profilePicture = user.profilePicture
-                    results.push(user)
+                        //add role name
+                        user.roleName = element.__data.role.__data.name;
+                        delete user.password;
+                        //add profile host and port to profile picture url
+                        user.profilePicture = user.profilePicture
+                        results.push(user)
                     
                         //when the looping has done
                         if (index == roleMappingResults.length - 1) {
@@ -391,33 +388,51 @@ module.exports = function (user) {
 
 
     })
+
+    user.afterRemote("findById", function (context, user, next) {
+        context.result.fullName = context.result.firstName + ' ' + context.result.lastName;
+        next();
+    })
+
+    user.afterRemote("logout", function (context, user, next) {
+        return context.res.sendStatus(200);
+    })
+
+    user.afterRemote("prototype.updateAttributes", function (context, user, next) {
+        context.result.fullName = context.result.firstName + ' ' + context.result.lastName;
+        next();
+    })
     
     //find users
     user.afterRemote('find', function (context, userInstance, next) {
         var roleMapping = app.models.RoleMapping;
-        
-        //looping for every item of results
-        context.result.forEach(function (result, index, array) {
-            delete  result.__data.password;
-            //add host and port to the profile picture url
-            result.__data.profilePicture = result.__data.profilePicture;
-            roleMapping.find({ include: { relation: 'role' }, where: { principalId: result.__data.id } }, function (err, roleMappingResults) {
-                if (roleMappingResults.length > 0) {
-                    result.__data.roleName = [];
-                    roleMappingResults.forEach(function (roleMappingResult) {
-                        //add role name
+        if (context.result.length == 0) {
+            next();
+        }
+        else {
+            //looping for every item of results
+            context.result.forEach(function (result, index, array) {
+                delete result.__data.password;
+                //add host and port to the profile picture url
+                result.__data.profilePicture = result.__data.profilePicture;
+                roleMapping.find({ include: { relation: 'role' }, where: { principalId: result.__data.id } }, function (err, roleMappingResults) {
+                    if (roleMappingResults.length > 0) {
+                        result.__data.roleName = [];
+                        roleMappingResults.forEach(function (roleMappingResult) {
+                            //add role name
                         
-                        result.__data.roleName.push(roleMappingResult.__data.role.__data.name)
+                            result.__data.roleName.push(roleMappingResult.__data.role.__data.name)
 
-                    })
+                        })
                     
-                    //when the looping has done
-                    if (index == context.result.length - 1) {
-                        next();
+                        //when the looping has done
+                        if (index == context.result.length - 1) {
+                            next();
+                        }
                     }
-                }
+                })
             })
-        })
+        }
     })
   
     //send password reset link when requested

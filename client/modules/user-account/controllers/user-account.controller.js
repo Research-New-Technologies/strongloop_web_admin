@@ -1,7 +1,7 @@
 angular.module('app')
     .controller('UserAccountController', function ($scope, $state, $rootScope, $window, $route, $timeout, $modal, User, $base64, Media, CommonService) {
 
-       
+
         $scope.users = {};
         $rootScope.isAdmin = true;
         $scope.limit = 6;
@@ -9,8 +9,9 @@ angular.module('app')
         $scope.key = 'id';
         $scope.SortAsc = true;
         $scope.userCount = 0;
-        
-        CommonService.setActiveMenu("user-account").then(function(res) {})
+        $scope.searchText = '';
+
+        CommonService.setActiveMenu("user-account").then(function (res) { })
 
         //get users with order by and also "DESC or ASC"
         $scope.getUsersWithSortAndPage = function (orderBy, type) {
@@ -18,27 +19,60 @@ angular.module('app')
             var skip = ($scope.skip - 1) * $scope.limit;
             
             //call Web service to find User with filter parameters
-            User.find({ filter: { limit: $scope.limit, skip: skip, order: orderBy + ' ' + type } }, function (response) {
-                $scope.users = response;
-                //get total users in database
-                User.count(function (count) {
-                    $scope.userCount = count.count;
-                    if (count.count <= $scope.limit * $scope.skip) {
-                        $scope.lastPage = true;
-                    }
-                    else {
-                        $scope.lastPage = false;
-                    }
+            if ($scope.searchText == '') {
+                User.find({ filter: { limit: $scope.limit, skip: skip, order: orderBy + ' ' + type } }, function (response) {
+                    $scope.users = response;
+                    //get total users in database
+                    User.count(function (count) {
+                        $scope.userCount = count.count;
+                        if (count.count <= $scope.limit * $scope.skip) {
+                            $scope.lastPage = true;
+                        }
+                        else {
+                            $scope.lastPage = false;
+                        }
+                    })
+                }, function (errorResponse) {
+                    CommonService.logout().then(function (response) {
+                        CommonService.callPopup(errorResponse.data.error.message).then(function (response) {
+                        });
+                    }, function (params) {
+                    })
                 })
-            }, function (errorResponse) {
-                console.log(errorResponse)
-                CommonService.logout().then(function (response) {
-                    CommonService.callPopup(errorResponse.data.error.message).then(function (response) {
-                });
-                }, function (params) {
+            }
+            else {
+                // var where_query =  { username:{like:$scope.searchText} };
+                // var where_query = FilterBuilder.build_where_filter({comparer: 'or', model: User});
+                // var result_filter = {};
+                // var user_properties = Object.keys(User)
+                
+                User.find({ filter: { where: {
+                            or: [
+                                {username:{like:$scope.searchText}}, 
+                                {email:{like:$scope.searchText}}
+                            ] 
+                                }
+                                }, limit: $scope.limit, skip: skip, order: orderBy + ' ' + type }, function (response) {
+                    $scope.users = response;
+                    //get total users in database
+                    User.count(function (count) {
+                        $scope.userCount = count.count;
+                        if (count.count <= $scope.limit * $scope.skip) {
+                            $scope.lastPage = true;
+                        }
+                        else {
+                            $scope.lastPage = false;
+                        }
+                    })
+                }, function (errorResponse) {
+                    CommonService.logout().then(function (response) {
+                        CommonService.callPopup(errorResponse.data.error.message).then(function (response) {
+                        });
+                    }, function (params) {
+                    })
                 })
+            }
 
-            })
         }
         
         //run this command when user open dashboard 
@@ -52,38 +86,26 @@ angular.module('app')
         
         //edit user - open edit user modal
         $scope.edit = function (user) {
-            $state.go('edit-user-account');
             $rootScope.editedUser = user;
+            $state.go('edit-user-account');
         }
         
         //add user - open add user modal
         $scope.add = function () {
-            $state.go('add-user-account');
             $scope.selectedUser = {};
-            $scope.modal_title = "Add a new User";
-            $scope.isDelete = false;
-            $scope.isAddUser = true;
-            $scope.isUpdateUser = false;
-            $scope.openModal();
+            $state.go('add-user-account');
         }
         
         //delete user - delete to web service
         $scope.deleteUser = function () {
             User.destroyById({ id: $scope.vm.deletedUser.id }, function (response) {
-                $scope.users = [];
-                $window.location.reload();
+                CommonService.callPopup("User has been deleted").then(function (response) {
+                    $scope.users = [];
+                    $window.location.reload();
+                });
             }, function (errorResponse) {
-                $scope.message = errorResponse.data.error.message;
-                $scope.openModal();
-            })
-        }
-                
-        //open modal function
-        $scope.openModal = function () {
-            $scope.modalInstance = $modal.open({
-                templateUrl: 'modal.html',
-                controller: 'UserAccountController',
-                scope: $scope
+                CommonService.callPopup(errorResponse.data.error.message).then(function (response) {
+                });
             })
         }
 
@@ -110,13 +132,17 @@ angular.module('app')
                 $scope.getUsersWithSortAndPage($scope.key, 'DESC');
             }
         }
-        
+
+        $scope.search = function () {
+            console.log($scope.searchText)
+            $scope.getUsersWithSortAndPage($scope.key, 'DESC');
+        }
         
         //pagination - go to desired page
         $scope.goToPage = function () {
             if ($scope.skip <= 0) {
-                $scope.message = "Please input valid page";
-                $scope.openModal();
+                CommonService.callPopup('Please input valid page').then(function (response) {
+                });
             }
             else {
                 if ($scope.skip == 1) {
@@ -182,52 +208,5 @@ angular.module('app')
         var vm = this;
         vm.user = {};
         vm.deletedUser = {};
-        vm.deletedUserFields = [
-            {
-                key: 'email',
-                type: 'input',
-                templateOptions: {
-                    type: 'email',
-                    label: 'Email address',
-                    placeholder: 'Enter email',
-                    disabled: true
-
-                }
-            },
-            {
-                key: 'username',
-                type: 'input',
-                templateOptions: {
-                    type: 'text',
-                    label: 'Username',
-                    placeholder: 'Enter username',
-                    disabled: true
-
-                }
-            }
-        ];
-
-        vm.userFields = [
-            {
-                key: 'email',
-                type: 'input',
-                templateOptions: {
-                    type: 'email',
-                    label: 'Email address',
-                    placeholder: 'Enter email',
-                    required: true
-
-                }
-            },
-            {
-                key: 'password',
-                type: 'input',
-                templateOptions: {
-                    type: 'password',
-                    label: 'Password',
-                    placeholder: 'Password',
-                    required: true
-                }
-            }
-        ];
+        vm.deleteUserFields = $rootScope.webAppConfig.formDefinition.deleteUserFields;
     });

@@ -17,11 +17,26 @@
         <!-- ./col -->
         <div class="col-lg-3 col-xs-6">
             <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{userCount}}</h3>
+
+                    <p>Member Users</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-add" data-toggle="modal" data-target="#myModal" ng-click="add()"></i>
+                </div>
+                <a href="" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
             <div class="small-box bg-yellow">
                 <div class="inner">
                     <h3>{{userCount}}</h3>
 
-                    <p>Users</p>
+                    <p>Admin Users</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-person-add" data-toggle="modal" data-target="#myModal" ng-click="add()"></i>
@@ -32,15 +47,51 @@
     </div>
     <!-- /.row -->
     <!-- /.row -->
-    <div class="row">
-        <div class="col-xs-12">
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+        <div class="col-md-12">
             <div class="box">
+                <div class="box-header with-border bg-yellow">
+                    <h3 class="box-title">Member Users</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool bg-gray" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-box-tool dropdown-toggle bg-gray" data-toggle="dropdown">
+                                <i class="fa fa-wrench"></i></button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn btn-box-tool bg-gray" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+
                 <div class="box-header">
                     <h3 class="box-title">Users</h3>
 
                     <div class="box-tools">
                         <div class="input-group input-group-sm" style="width: 150px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+                            <input type="text" name="table_search" class="form-control pull-right" ng-model="searchText" ng-change="search()" placeholder="Search">
 
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
@@ -72,8 +123,158 @@
                             <td class=""><img ng-src="{{user.profilePicture}}" height="42" width="42"></img>
                             </td>
                             <td class="">
-                                <button class="btn btn-default margin-15" title="Edit this field" data-toggle="modal" data-target="#myModal" ng-click="edit(user)"><i class="fa fa-edit"></i></button>
-                                <button title="Delete this field" class="btn btn-default" data-toggle="modal" data-target="#myModal" ng-click="delete(user)"
+                                <button class="btn btn-success margin-15" title="Edit this field" data-toggle="modal" data-target="#myModal" ng-click="edit(user)"><i class="fa fa-edit"></i></button>
+                                <button title="Delete this field" class="btn btn-danger" data-toggle="modal" data-target="#myModal" ng-click="delete(user)"
+                                ng-disabled="user.username == username"><i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+                <form name="goToPageForm">
+                    <div class="box-footer clearfix" align="center">
+                        <input type="number" name="inputPage" min="1" ng-model="skip" class="go-to-input"></input><a href="" ng-click="goToPage()">Go</a>
+                    </div>
+                </form>
+                <div class="box-footer clearfix" align="center">
+                    <ul class="pagination pagination-sm no-margin">
+                        <li><a href="" ng-click="goToPrev()">&laquo;</a></li>
+                        <li><a href="">{{skip}}</a></li>
+                        <li><a href="" ng-click="goToNext()">&raquo;</a></li>
+                    </ul>
+                </div>
+                
+                            <div class="box-footer">
+              <div class="row">
+                <div class="col-sm-3 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
+                    <h5 class="description-header">$35,210.43</h5>
+                    <span class="description-text">TOTAL USER</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
+                    <h5 class="description-header">$10,390.90</h5>
+                    <span class="description-text">NEW USER</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
+                    <h5 class="description-header">$24,813.53</h5>
+                    <span class="description-text">ACTIVE USER</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 col-xs-6">
+                  <div class="description-block">
+                    <span class="description-percentage text-red"><i class="fa fa-caret-down"></i> 18%</span>
+                    <h5 class="description-header">1200</h5>
+                    <span class="description-text">UNVERIFED USER</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+              </div>
+              <!-- /.row -->
+            </div>
+
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- ./box-body -->
+                <!-- /.box-footer -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header with-border bg-green">
+                    <h3 class="box-title">Admin Users</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool bg-gray" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-box-tool dropdown-toggle bg-gray" data-toggle="dropdown">
+                                <i class="fa fa-wrench"></i></button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn btn-box-tool bg-gray" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                <div class="box-header">
+                    <h3 class="box-title">Users</h3>
+
+                    <div class="box-tools">
+                        <div class="input-group input-group-sm" style="width: 150px;">
+                            <input type="text" name="table_search" class="form-control pull-right" ng-model="searchText" ng-change="search()" placeholder="Search">
+
+                            <div class="input-group-btn">
+                                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tr>
+                            <th><a href="" ng-click="sortBy('id')">ID</a></th>
+                            <th><a href="" ng-click="sortBy('username')">Username</a></th>
+                            <th><a href="" ng-click="sortBy('email')">Email</a></th>
+                            <th><a href="" ng-click="sortBy('firstName')">First Name</a></th>
+                            <th><a href="" ng-click="sortBy('lastName')">Last Name</a></th>
+                            <th><a href="" ng-click="sortBy('roleId')">Role</a></th>
+                            <th>Profile Picture</a>
+                            </th>
+                            <th>Actions</th>
+                        </tr>
+                        <tr ng-repeat="user in users">
+                            <td class="col-fixed">{{user.id}}</td>
+                            <td class="">{{user.username}}</td>
+                            <td class="">{{user.email}}</td>
+                            <td class="">{{user.firstName}}</td>
+                            <td class="">{{user.lastName}}</td>
+                            <td class="">{{user.roleName.toString()}}</td>
+                            <td class=""><img ng-src="{{user.profilePicture}}" height="42" width="42"></img>
+                            </td>
+                            <td class="">
+                                <button class="btn btn-success margin-15" title="Edit this field" data-toggle="modal" data-target="#myModal" ng-click="edit(user)"><i class="fa fa-edit"></i></button>
+                                <button title="Delete this field" class="btn btn-danger" data-toggle="modal" data-target="#myModal" ng-click="delete(user)"
                                 ng-disabled="user.username == username"><i class="fa fa-trash"></i></button>
                             </td>
                         </tr>
@@ -93,11 +294,26 @@
                     </ul>
                 </div>
 
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- ./box-body -->
+                <!-- /.box-footer -->
             </div>
-            <!-- /.box-body -->
+            <!-- /.box -->
         </div>
-        <!-- /.box -->
+        <!-- /.col -->
     </div>
+
+
+
+
+
+
+
+
 </section>
 <!-- /.content -->
 </div>
@@ -114,7 +330,7 @@
                 </div>
                 <div class="modal-body">
                     <form novalidate>
-                        <formly-form model="vm.deletedUser" fields="vm.deletedUserFields" form="vm.deletedUserForm">
+                        <formly-form model="vm.deletedUser" fields="vm.deleteUserFields" form="vm.deleteUserForm">
                             <button type="submit" class="btn btn-default btn-delete" ng-click="deleteUser()">Delete</button>
                         </formly-form>
                     </form>
@@ -141,7 +357,7 @@
                     {{message}}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" ng-click="closeModal()">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="closeModal()">Close</button>
                 </div>
             </div>
         </div>

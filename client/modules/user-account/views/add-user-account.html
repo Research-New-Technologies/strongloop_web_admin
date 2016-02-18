@@ -30,8 +30,9 @@
         <div class="row" align="center">
             <div class="add-user-form" align="left">
                 <form novalidate>
-                    <formly-form model="vm.addedUser" fields="vm.addedUserFields" form="vm.addedUserForm">
-                        <button type="submit" class="btn btn-default btn-login" ng-click="addUser()">Add User</button>
+                    <formly-form model="vm.addedUser" fields="vm.addUserFields" form="vm.addUserForm">
+                        <button type="submit" class="btn btn-success btn-login" ng-click="addUser()">Add User</button>
+                        <button type="submit" class="btn btn-default btn-login" ng-click="cancel()">Cancel</button>
                     </formly-form>
                 </form>
             </div>

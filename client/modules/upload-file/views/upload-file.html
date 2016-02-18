@@ -18,10 +18,10 @@
                     <i class="fa fa-info-circle" ng-click="goToInstruction()"></i> 
                     <div class="form-inline" align="center">
                         <div class="form-group">
-                            <input type="file" class="form-control" accept="*" placeholder="file" ng-model-instant onchange="angular.element(this).scope().uploadFile(this)"
+                            <input type="file" class="form-control" accept="*" placeholder="file" id="uploadFile" ng-model-instant onchange="angular.element(this).scope().uploadFile(this)"
                             multiple>
                         </div>
-                        <button type="submit" class="btn btn-default" ng-click="upload()">Upload</button>
+                        <button type="submit" class="btn btn-success" ng-click="upload()">Upload</button>
                     </div>
                     <br>
                 </div>

@@ -19,6 +19,7 @@ module.exports = function (app) {
     
         //when there is no any role, then create the default admin and member user
         if (roleAdminResults.length == 0) {
+            
             //create a admin role
             role.create({
                 name: 'admin'
@@ -123,7 +124,7 @@ module.exports = function (app) {
                 webName: "Web Application",
                 companyName: "Web",
                 initial: "M W",
-                webVersion:"0.0.2",
+                webVersion: "0.0.2",
                 disableSignUp: true,
                 disableResetPassword: true,
                 disableForgotPassword: true,
@@ -186,12 +187,135 @@ module.exports = function (app) {
                                 required: true
                             }
                         }
+                    ],
+                    addUserFields: [
+                        {
+                            key: 'email',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'email',
+                                label: 'Email address',
+                                placeholder: 'Enter email',
+                                required: true
+                            }
+                        },
+                        {
+                            key: 'username',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'text',
+                                label: 'Username',
+                                placeholder: 'Enter username',
+                                required: true
+                            }
+                        },
+                        {
+                            key: 'password',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'password',
+                                label: 'Password',
+                                placeholder: 'Enter password',
+                                required: true
+                            }
+                        },
+                        {
+                            key: 'confirmPassword',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'password',
+                                label: 'Confirm Password',
+                                placeholder: 'Enter password again',
+                                required: true
+                            }
+                        },
+                        {
+                            key: 'firstName',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'text',
+                                label: 'First Name',
+                                placeholder: 'Enter first name'
+                            }
+                        },
+                        {
+                            key: 'lastName',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'text',
+                                label: 'last Name',
+                                placeholder: 'Enter last name'
+                            }
+                        }
+                    ],
+                    editUserFields: [
+                        {
+                            key: 'email',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'email',
+                                label: 'Email address',
+                                placeholder: 'Enter email',
+                                required: true
+                            }
+                        },
+                        {
+                            key: 'username',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'text',
+                                label: 'Username',
+                                placeholder: 'Enter username',
+                                required: true,
+                                disabled: true
+                            }
+                        },
+                        {
+                            key: 'firstName',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'text',
+                                label: 'First Name',
+                                placeholder: 'Enter first name'
+                            }
+                        },
+                        {
+                            key: 'lastName',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'text',
+                                label: 'last Name',
+                                placeholder: 'Enter last name'
+                            }
+                        }
+                    ],
+                    deleteUserFields: [
+                        {
+                            key: 'email',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'email',
+                                label: 'Email address',
+                                placeholder: 'Enter email',
+                                disabled: true
+                            }
+                        },
+                        {
+                            key: 'username',
+                            type: 'input',
+                            templateOptions: {
+                                type: 'text',
+                                label: 'Username',
+                                placeholder: 'Enter username',
+                                disabled: true
+                            }
+                        }
                     ]
                 }
             }
-            
-            
-            webClientConfig.create(webConfig, function(err, webClientConfigCreateResult){
+
+
+            webClientConfig.create(webConfig, function (err, webClientConfigCreateResult) {
                 console.log(webClientConfigCreateResult)
             })
         }
