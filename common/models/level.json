@@ -1,21 +1,28 @@
 {
-  "name": "location",
+  "name": "level",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "location": {
+    "level": {
       "type": "string",
       "required": true
     },
-    "project": {
+    "projectId": {
       "type": "string",
       "required": true
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+       "zone": {
+      "type": "hasMany",
+      "model": "zone",
+      "foreignKey": "levelId"
+    }
+  },
   "acls": [],
   "methods": {}
 }

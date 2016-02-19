@@ -1,8 +1,8 @@
 angular.module('app')
-    .controller('GenerateReportController', function ($scope, Location, $sce, CommonService, $rootScope, $modal, $location) {
+    .controller('GenerateReportController', function ($scope, Project, $sce, CommonService, $rootScope, $modal, $location) {
         CommonService.setActiveMenu("generate-report").then(function (res) { })
         $scope.generate = function () {
-            Location.generate(function (generateResponse) {
+            Project.generate(function (generateResponse) {
                 $scope.content = generateResponse.url;
                 $scope.isGenerateReport = true;
             }, function (responseError) {

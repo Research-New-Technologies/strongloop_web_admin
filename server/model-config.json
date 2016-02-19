@@ -34,7 +34,7 @@
     "public": false
   },
   "Email": {
-    "dataSource": "emailDs"
+    "dataSource": "memory"
   },
   "user": {
     "dataSource": "memory",
@@ -47,11 +47,19 @@
     "dataSource": "memory",
     "public": true
   },
-  "location": {
+  "project": {
     "dataSource": "memory",
     "public": true
   },
   "webAppConfig": {
+    "dataSource": "memory",
+    "public": true
+  },
+  "level": {
+    "dataSource": "memory",
+    "public": true
+  },
+  "zone": {
     "dataSource": "memory",
     "public": true
   }

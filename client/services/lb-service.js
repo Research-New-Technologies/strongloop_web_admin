@@ -2782,13 +2782,13 @@ module.factory(
 
 /**
  * @ngdoc object
- * @name lbServices.Location
- * @header lbServices.Location
+ * @name lbServices.Project
+ * @header lbServices.Project
  * @object
  *
  * @description
  *
- * A $resource object for interacting with the `Location` model.
+ * A $resource object for interacting with the `Project` model.
  *
  * ## Example
  *
@@ -2798,17 +2798,69 @@ module.factory(
  *
  */
 module.factory(
-  "Location",
+  "Project",
   ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
     var R = Resource(
-      urlBase + "/locations/:id",
+      urlBase + "/projects/:id",
       { 'id': '@id' },
       {
 
+        // INTERNAL. Use Project.level.findById() instead.
+        "prototype$__findById__level": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/projects/:id/level/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Project.level.destroyById() instead.
+        "prototype$__destroyById__level": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/projects/:id/level/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Project.level.updateById() instead.
+        "prototype$__updateById__level": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/projects/:id/level/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use Project.level() instead.
+        "prototype$__get__level": {
+          isArray: true,
+          url: urlBase + "/projects/:id/level",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Project.level.create() instead.
+        "prototype$__create__level": {
+          url: urlBase + "/projects/:id/level",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Project.level.destroyAll() instead.
+        "prototype$__delete__level": {
+          url: urlBase + "/projects/:id/level",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Project.level.count() instead.
+        "prototype$__count__level": {
+          url: urlBase + "/projects/:id/level/count",
+          method: "GET"
+        },
+
         /**
          * @ngdoc method
-         * @name lbServices.Location#create
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#create
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -2835,18 +2887,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         "create": {
-          url: urlBase + "/locations",
+          url: urlBase + "/projects",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#createMany
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#createMany
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -2873,19 +2925,19 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         "createMany": {
           isArray: true,
-          url: urlBase + "/locations",
+          url: urlBase + "/projects",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#upsert
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#upsert
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -2912,18 +2964,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         "upsert": {
-          url: urlBase + "/locations",
+          url: urlBase + "/projects",
           method: "PUT"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#exists
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#exists
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -2948,14 +3000,14 @@ module.factory(
          *  - `exists` – `{boolean=}` - 
          */
         "exists": {
-          url: urlBase + "/locations/:id/exists",
+          url: urlBase + "/projects/:id/exists",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#findById
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#findById
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -2979,18 +3031,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         "findById": {
-          url: urlBase + "/locations/:id",
+          url: urlBase + "/projects/:id",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#find
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#find
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3012,19 +3064,19 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         "find": {
           isArray: true,
-          url: urlBase + "/locations",
+          url: urlBase + "/projects",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#findOne
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#findOne
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3046,18 +3098,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         "findOne": {
-          url: urlBase + "/locations/findOne",
+          url: urlBase + "/projects/findOne",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#updateAll
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#updateAll
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3084,14 +3136,14 @@ module.factory(
          * The number of instances updated
          */
         "updateAll": {
-          url: urlBase + "/locations/update",
+          url: urlBase + "/projects/update",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#deleteById
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#deleteById
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3113,18 +3165,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         "deleteById": {
-          url: urlBase + "/locations/:id",
+          url: urlBase + "/projects/:id",
           method: "DELETE"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#count
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#count
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3149,14 +3201,14 @@ module.factory(
          *  - `count` – `{number=}` - 
          */
         "count": {
-          url: urlBase + "/locations/count",
+          url: urlBase + "/projects/count",
           method: "GET"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#prototype$updateAttributes
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#prototype$updateAttributes
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3182,18 +3234,18 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         "prototype$updateAttributes": {
-          url: urlBase + "/locations/:id",
+          url: urlBase + "/projects/:id",
           method: "PUT"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#createChangeStream
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#createChangeStream
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3223,14 +3275,14 @@ module.factory(
          *  - `changes` – `{ReadableStream=}` - 
          */
         "createChangeStream": {
-          url: urlBase + "/locations/change-stream",
+          url: urlBase + "/projects/change-stream",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#export
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#export
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3258,14 +3310,14 @@ module.factory(
          * This method returns no data.
          */
         "export": {
-          url: urlBase + "/locations/export",
+          url: urlBase + "/projects/export",
           method: "POST"
         },
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#generate
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#generate
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3293,7 +3345,7 @@ module.factory(
          * This method returns no data.
          */
         "generate": {
-          url: urlBase + "/locations/generate",
+          url: urlBase + "/projects/generate",
           method: "POST"
         },
       }
@@ -3303,8 +3355,8 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#updateOrCreate
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#updateOrCreate
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3331,15 +3383,15 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         R["updateOrCreate"] = R["upsert"];
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#update
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#update
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3369,8 +3421,8 @@ module.factory(
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#destroyById
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#destroyById
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3392,15 +3444,15 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         R["destroyById"] = R["deleteById"];
 
         /**
          * @ngdoc method
-         * @name lbServices.Location#removeById
-         * @methodOf lbServices.Location
+         * @name lbServices.Project#removeById
+         * @methodOf lbServices.Project
          *
          * @description
          *
@@ -3422,7 +3474,7 @@ module.factory(
          *
          * <em>
          * (The remote method definition does not provide any description.
-         * This usually means the response is a `Location` object.)
+         * This usually means the response is a `Project` object.)
          * </em>
          */
         R["removeById"] = R["deleteById"];
@@ -3430,14 +3482,315 @@ module.factory(
 
     /**
     * @ngdoc property
-    * @name lbServices.Location#modelName
-    * @propertyOf lbServices.Location
+    * @name lbServices.Project#modelName
+    * @propertyOf lbServices.Project
     * @description
     * The name of the model represented by this $resource,
-    * i.e. `Location`.
+    * i.e. `Project`.
     */
-    R.modelName = "Location";
+    R.modelName = "Project";
 
+    /**
+     * @ngdoc object
+     * @name lbServices.Project.level
+     * @header lbServices.Project.level
+     * @object
+     * @description
+     *
+     * The object `Project.level` groups methods
+     * manipulating `Level` instances related to `Project`.
+     *
+     * Call {@link lbServices.Project#level Project.level()}
+     * to query all related instances.
+     */
+
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Project#level
+         * @methodOf lbServices.Project
+         *
+         * @description
+         *
+         * Queries level of project.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `filter` – `{object=}` - 
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        R.level = function() {
+          var TargetResource = $injector.get("Level");
+          var action = TargetResource["::get::project::level"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Project.level#count
+         * @methodOf lbServices.Project.level
+         *
+         * @description
+         *
+         * Counts level of project.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        R.level.count = function() {
+          var TargetResource = $injector.get("Level");
+          var action = TargetResource["::count::project::level"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Project.level#create
+         * @methodOf lbServices.Project.level
+         *
+         * @description
+         *
+         * Creates a new instance in level of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        R.level.create = function() {
+          var TargetResource = $injector.get("Level");
+          var action = TargetResource["::create::project::level"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Project.level#createMany
+         * @methodOf lbServices.Project.level
+         *
+         * @description
+         *
+         * Creates a new instance in level of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        R.level.createMany = function() {
+          var TargetResource = $injector.get("Level");
+          var action = TargetResource["::createMany::project::level"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Project.level#destroyAll
+         * @methodOf lbServices.Project.level
+         *
+         * @description
+         *
+         * Deletes all level of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.level.destroyAll = function() {
+          var TargetResource = $injector.get("Level");
+          var action = TargetResource["::delete::project::level"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Project.level#destroyById
+         * @methodOf lbServices.Project.level
+         *
+         * @description
+         *
+         * Delete a related item by id for level.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `fk` – `{*}` - Foreign key for level
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.level.destroyById = function() {
+          var TargetResource = $injector.get("Level");
+          var action = TargetResource["::destroyById::project::level"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Project.level#findById
+         * @methodOf lbServices.Project.level
+         *
+         * @description
+         *
+         * Find a related item by id for level.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `fk` – `{*}` - Foreign key for level
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        R.level.findById = function() {
+          var TargetResource = $injector.get("Level");
+          var action = TargetResource["::findById::project::level"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Project.level#updateById
+         * @methodOf lbServices.Project.level
+         *
+         * @description
+         *
+         * Update a related item by id for level.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `fk` – `{*}` - Foreign key for level
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        R.level.updateById = function() {
+          var TargetResource = $injector.get("Level");
+          var action = TargetResource["::updateById::project::level"];
+          return action.apply(R, arguments);
+        };
 
     return R;
   }]);
@@ -4029,6 +4382,1661 @@ module.factory(
     * i.e. `WebAppConfig`.
     */
     R.modelName = "WebAppConfig";
+
+
+    return R;
+  }]);
+
+/**
+ * @ngdoc object
+ * @name lbServices.Level
+ * @header lbServices.Level
+ * @object
+ *
+ * @description
+ *
+ * A $resource object for interacting with the `Level` model.
+ *
+ * ## Example
+ *
+ * See
+ * {@link http://docs.angularjs.org/api/ngResource.$resource#example $resource}
+ * for an example of using this object.
+ *
+ */
+module.factory(
+  "Level",
+  ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
+    var R = Resource(
+      urlBase + "/levels/:id",
+      { 'id': '@id' },
+      {
+
+        // INTERNAL. Use Level.zone.findById() instead.
+        "prototype$__findById__zone": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/levels/:id/zone/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Level.zone.destroyById() instead.
+        "prototype$__destroyById__zone": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/levels/:id/zone/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Level.zone.updateById() instead.
+        "prototype$__updateById__zone": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/levels/:id/zone/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use Level.zone() instead.
+        "prototype$__get__zone": {
+          isArray: true,
+          url: urlBase + "/levels/:id/zone",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Level.zone.create() instead.
+        "prototype$__create__zone": {
+          url: urlBase + "/levels/:id/zone",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Level.zone.destroyAll() instead.
+        "prototype$__delete__zone": {
+          url: urlBase + "/levels/:id/zone",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Level.zone.count() instead.
+        "prototype$__count__zone": {
+          url: urlBase + "/levels/:id/zone/count",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#create
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Create a new instance of the model and persist it into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        "create": {
+          url: urlBase + "/levels",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#createMany
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Create a new instance of the model and persist it into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        "createMany": {
+          isArray: true,
+          url: urlBase + "/levels",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#upsert
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Update an existing model instance or insert a new one into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        "upsert": {
+          url: urlBase + "/levels",
+          method: "PUT"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#exists
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Check whether a model instance exists in the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `exists` – `{boolean=}` - 
+         */
+        "exists": {
+          url: urlBase + "/levels/:id/exists",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#findById
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Find a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         *  - `filter` – `{object=}` - Filter defining fields and include
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        "findById": {
+          url: urlBase + "/levels/:id",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#find
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Find all instances of the model matched by filter from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `filter` – `{object=}` - Filter defining fields, where, include, order, offset, and limit
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        "find": {
+          isArray: true,
+          url: urlBase + "/levels",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#findOne
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Find first instance of the model matched by filter from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `filter` – `{object=}` - Filter defining fields, where, include, order, offset, and limit
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        "findOne": {
+          url: urlBase + "/levels/findOne",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#updateAll
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Update instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * The number of instances updated
+         */
+        "updateAll": {
+          url: urlBase + "/levels/update",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#deleteById
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        "deleteById": {
+          url: urlBase + "/levels/:id",
+          method: "DELETE"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#count
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Count instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        "count": {
+          url: urlBase + "/levels/count",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#prototype$updateAttributes
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Update attributes for a model instance and persist it into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        "prototype$updateAttributes": {
+          url: urlBase + "/levels/:id",
+          method: "PUT"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#createChangeStream
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Create a change stream.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         *  - `options` – `{object=}` - 
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `changes` – `{ReadableStream=}` - 
+         */
+        "createChangeStream": {
+          url: urlBase + "/levels/change-stream",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Project.level.findById() instead.
+        "::findById::project::level": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/projects/:id/level/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Project.level.destroyById() instead.
+        "::destroyById::project::level": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/projects/:id/level/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Project.level.updateById() instead.
+        "::updateById::project::level": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/projects/:id/level/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use Project.level() instead.
+        "::get::project::level": {
+          isArray: true,
+          url: urlBase + "/projects/:id/level",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Project.level.create() instead.
+        "::create::project::level": {
+          url: urlBase + "/projects/:id/level",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Project.level.createMany() instead.
+        "::createMany::project::level": {
+          isArray: true,
+          url: urlBase + "/projects/:id/level",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Project.level.destroyAll() instead.
+        "::delete::project::level": {
+          url: urlBase + "/projects/:id/level",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Project.level.count() instead.
+        "::count::project::level": {
+          url: urlBase + "/projects/:id/level/count",
+          method: "GET"
+        },
+      }
+    );
+
+
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#updateOrCreate
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Update an existing model instance or insert a new one into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        R["updateOrCreate"] = R["upsert"];
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#update
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Update instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * The number of instances updated
+         */
+        R["update"] = R["updateAll"];
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#destroyById
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        R["destroyById"] = R["deleteById"];
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#removeById
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Level` object.)
+         * </em>
+         */
+        R["removeById"] = R["deleteById"];
+
+
+    /**
+    * @ngdoc property
+    * @name lbServices.Level#modelName
+    * @propertyOf lbServices.Level
+    * @description
+    * The name of the model represented by this $resource,
+    * i.e. `Level`.
+    */
+    R.modelName = "Level";
+
+    /**
+     * @ngdoc object
+     * @name lbServices.Level.zone
+     * @header lbServices.Level.zone
+     * @object
+     * @description
+     *
+     * The object `Level.zone` groups methods
+     * manipulating `Zone` instances related to `Level`.
+     *
+     * Call {@link lbServices.Level#zone Level.zone()}
+     * to query all related instances.
+     */
+
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level#zone
+         * @methodOf lbServices.Level
+         *
+         * @description
+         *
+         * Queries zone of level.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `filter` – `{object=}` - 
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        R.zone = function() {
+          var TargetResource = $injector.get("Zone");
+          var action = TargetResource["::get::level::zone"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level.zone#count
+         * @methodOf lbServices.Level.zone
+         *
+         * @description
+         *
+         * Counts zone of level.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        R.zone.count = function() {
+          var TargetResource = $injector.get("Zone");
+          var action = TargetResource["::count::level::zone"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level.zone#create
+         * @methodOf lbServices.Level.zone
+         *
+         * @description
+         *
+         * Creates a new instance in zone of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        R.zone.create = function() {
+          var TargetResource = $injector.get("Zone");
+          var action = TargetResource["::create::level::zone"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level.zone#createMany
+         * @methodOf lbServices.Level.zone
+         *
+         * @description
+         *
+         * Creates a new instance in zone of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        R.zone.createMany = function() {
+          var TargetResource = $injector.get("Zone");
+          var action = TargetResource["::createMany::level::zone"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level.zone#destroyAll
+         * @methodOf lbServices.Level.zone
+         *
+         * @description
+         *
+         * Deletes all zone of this model.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.zone.destroyAll = function() {
+          var TargetResource = $injector.get("Zone");
+          var action = TargetResource["::delete::level::zone"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level.zone#destroyById
+         * @methodOf lbServices.Level.zone
+         *
+         * @description
+         *
+         * Delete a related item by id for zone.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `fk` – `{*}` - Foreign key for zone
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * This method returns no data.
+         */
+        R.zone.destroyById = function() {
+          var TargetResource = $injector.get("Zone");
+          var action = TargetResource["::destroyById::level::zone"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level.zone#findById
+         * @methodOf lbServices.Level.zone
+         *
+         * @description
+         *
+         * Find a related item by id for zone.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `fk` – `{*}` - Foreign key for zone
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        R.zone.findById = function() {
+          var TargetResource = $injector.get("Zone");
+          var action = TargetResource["::findById::level::zone"];
+          return action.apply(R, arguments);
+        };
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Level.zone#updateById
+         * @methodOf lbServices.Level.zone
+         *
+         * @description
+         *
+         * Update a related item by id for zone.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         *  - `fk` – `{*}` - Foreign key for zone
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        R.zone.updateById = function() {
+          var TargetResource = $injector.get("Zone");
+          var action = TargetResource["::updateById::level::zone"];
+          return action.apply(R, arguments);
+        };
+
+    return R;
+  }]);
+
+/**
+ * @ngdoc object
+ * @name lbServices.Zone
+ * @header lbServices.Zone
+ * @object
+ *
+ * @description
+ *
+ * A $resource object for interacting with the `Zone` model.
+ *
+ * ## Example
+ *
+ * See
+ * {@link http://docs.angularjs.org/api/ngResource.$resource#example $resource}
+ * for an example of using this object.
+ *
+ */
+module.factory(
+  "Zone",
+  ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
+    var R = Resource(
+      urlBase + "/zones/:id",
+      { 'id': '@id' },
+      {
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#create
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Create a new instance of the model and persist it into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        "create": {
+          url: urlBase + "/zones",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#createMany
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Create a new instance of the model and persist it into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        "createMany": {
+          isArray: true,
+          url: urlBase + "/zones",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#upsert
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Update an existing model instance or insert a new one into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        "upsert": {
+          url: urlBase + "/zones",
+          method: "PUT"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#exists
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Check whether a model instance exists in the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `exists` – `{boolean=}` - 
+         */
+        "exists": {
+          url: urlBase + "/zones/:id/exists",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#findById
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Find a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         *  - `filter` – `{object=}` - Filter defining fields and include
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        "findById": {
+          url: urlBase + "/zones/:id",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#find
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Find all instances of the model matched by filter from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `filter` – `{object=}` - Filter defining fields, where, include, order, offset, and limit
+         *
+         * @param {function(Array.<Object>,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Array.<Object>} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        "find": {
+          isArray: true,
+          url: urlBase + "/zones",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#findOne
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Find first instance of the model matched by filter from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `filter` – `{object=}` - Filter defining fields, where, include, order, offset, and limit
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        "findOne": {
+          url: urlBase + "/zones/findOne",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#updateAll
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Update instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * The number of instances updated
+         */
+        "updateAll": {
+          url: urlBase + "/zones/update",
+          method: "POST"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#deleteById
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        "deleteById": {
+          url: urlBase + "/zones/:id",
+          method: "DELETE"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#count
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Count instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `count` – `{number=}` - 
+         */
+        "count": {
+          url: urlBase + "/zones/count",
+          method: "GET"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#prototype$updateAttributes
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Update attributes for a model instance and persist it into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - PersistedModel id
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        "prototype$updateAttributes": {
+          url: urlBase + "/zones/:id",
+          method: "PUT"
+        },
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#createChangeStream
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Create a change stream.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         *  - `options` – `{object=}` - 
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * Data properties:
+         *
+         *  - `changes` – `{ReadableStream=}` - 
+         */
+        "createChangeStream": {
+          url: urlBase + "/zones/change-stream",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Level.zone.findById() instead.
+        "::findById::level::zone": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/levels/:id/zone/:fk",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Level.zone.destroyById() instead.
+        "::destroyById::level::zone": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/levels/:id/zone/:fk",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Level.zone.updateById() instead.
+        "::updateById::level::zone": {
+          params: {
+          'fk': '@fk'
+          },
+          url: urlBase + "/levels/:id/zone/:fk",
+          method: "PUT"
+        },
+
+        // INTERNAL. Use Level.zone() instead.
+        "::get::level::zone": {
+          isArray: true,
+          url: urlBase + "/levels/:id/zone",
+          method: "GET"
+        },
+
+        // INTERNAL. Use Level.zone.create() instead.
+        "::create::level::zone": {
+          url: urlBase + "/levels/:id/zone",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Level.zone.createMany() instead.
+        "::createMany::level::zone": {
+          isArray: true,
+          url: urlBase + "/levels/:id/zone",
+          method: "POST"
+        },
+
+        // INTERNAL. Use Level.zone.destroyAll() instead.
+        "::delete::level::zone": {
+          url: urlBase + "/levels/:id/zone",
+          method: "DELETE"
+        },
+
+        // INTERNAL. Use Level.zone.count() instead.
+        "::count::level::zone": {
+          url: urlBase + "/levels/:id/zone/count",
+          method: "GET"
+        },
+      }
+    );
+
+
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#updateOrCreate
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Update an existing model instance or insert a new one into the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *   This method does not accept any parameters.
+         *   Supply an empty object or omit this argument altogether.
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        R["updateOrCreate"] = R["upsert"];
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#update
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Update instances of the model matched by where from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `where` – `{object=}` - Criteria to match model instances
+         *
+         * @param {Object} postData Request data.
+         *
+         * This method expects a subset of model properties as request parameters.
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * The number of instances updated
+         */
+        R["update"] = R["updateAll"];
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#destroyById
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        R["destroyById"] = R["deleteById"];
+
+        /**
+         * @ngdoc method
+         * @name lbServices.Zone#removeById
+         * @methodOf lbServices.Zone
+         *
+         * @description
+         *
+         * Delete a model instance by id from the data source.
+         *
+         * @param {Object=} parameters Request parameters.
+         *
+         *  - `id` – `{*}` - Model id
+         *
+         * @param {function(Object,Object)=} successCb
+         *   Success callback with two arguments: `value`, `responseHeaders`.
+         *
+         * @param {function(Object)=} errorCb Error callback with one argument:
+         *   `httpResponse`.
+         *
+         * @returns {Object} An empty reference that will be
+         *   populated with the actual data once the response is returned
+         *   from the server.
+         *
+         * <em>
+         * (The remote method definition does not provide any description.
+         * This usually means the response is a `Zone` object.)
+         * </em>
+         */
+        R["removeById"] = R["deleteById"];
+
+
+    /**
+    * @ngdoc property
+    * @name lbServices.Zone#modelName
+    * @propertyOf lbServices.Zone
+    * @description
+    * The name of the model represented by this $resource,
+    * i.e. `Zone`.
+    */
+    R.modelName = "Zone";
 
 
     return R;

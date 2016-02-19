@@ -1,4 +1,4 @@
-module.exports = function (Location) {
+module.exports = function (Project) {
     var appRoot = require('../../server/server');
     var parse = require('excel');
     var uuid = require('node-uuid');
@@ -6,7 +6,7 @@ module.exports = function (Location) {
     var fs = require('fs')
     // Decoding base-64 image
     function decodeBase64Image(base64String) {
-        if(typeof(base64String) == 'undefined'){
+        if (typeof (base64String) == 'undefined') {
             return null;
         }
         var matches = base64String.match(/data:application\/vnd\.openxmlformats\-officedocument\.spreadsheetml\.sheet;base64,/);
@@ -16,10 +16,70 @@ module.exports = function (Location) {
             return fileBuffer;
         }
     }
+
+    Project.insertData = function (array, index, context, next) {
+        if(index == array.length){
+           Project.find({ include: { relation: 'level', scope: { include: { relation: 'zone' } } } }, function(err, results){
+               var result = {};
+               result.data = results;
+             return context.res.status(200).send(result);
+           })
+           
+           
+        }
+        else {
+        var element = array[index];
+        var level = appRoot.models.level;
+        var zone = appRoot.models.zone;
+        Project.find({ where: { project: element[0].toString() } }, function (err, projectResponse) {
+            if (projectResponse.length != 0) {
+                
+                level.find({ where: { level: element[1], } }, function (err, levelResponse) {
+                    if (levelResponse.length != 0) {
+                    
+                        zone.find({ where: { zone: element[2], } }, function (err, zoneResponse) {
+                            if (zoneResponse.length != 0) {
+                                index = index + 1;
+                                    Project.insertData(array, index,context,  next);
+                            }
+                            else {
+                                zone.create({ zone: element[2], levelId: levelResponse[0].__data.id }, function (err, zoneCreateResult) {
+                                         index = index + 1;
+                                    Project.insertData(array, index,context,  next);
+                                })
+                            }
+
+                        })
+                    }
+                    else {
+                        level.create({ level: element[1], projectId: projectResponse[0].__data.id }, function (err, levelCreateResult) {
+                            zone.create({ zone: element[2], levelId: levelCreateResult.id }, function (err, zoneCreateResult) {
+                                     index = index + 1;
+                                    Project.insertData(array, index, context, next);
+                            })
+                        })
+                    }
+                })
+            }
+            else {
+                Project.create({ project: element[0] }, function (err, projectCreateResult) {
+                    level.create({ level: element[1], projectId: projectCreateResult.id }, function (err, levelCreateResult) {
+                        zone.create({ zone: element[2], levelId: levelCreateResult.id }, function (err, projectCreateResult) {
+                               index = index + 1;
+                             Project.insertData(array, index,context,  next);
+                        })
+                    })
+                })
+            }
+        })
+         }
+    }
     
     
     //upload file
-    Location.beforeRemote('export', function (context, mediaInstance, next) {
+    Project.beforeRemote('export', function (context, mediaInstance, next) {
+
+
         //convert req body data to image
         var data = decodeBase64Image(context.req.body.data);
         if (data != null) {
@@ -29,46 +89,27 @@ module.exports = function (Location) {
             fs.writeFile(temporaryFilePath, data, function (err) {
                 parse(temporaryFilePath, function (err, result) {
                     records = result;
-                    var resultJson = [];
                     fs.unlink(temporaryFilePath);
                     var headers = [];
-                    result.forEach(function (element, index, array) {
-                        if (index == 0) {
-                            headers = element;
-                        }
-                        else {
-                            var object = {};
-                            headers.forEach(function (headerElement, headerIndex, headerArray) {
-                                object[headerElement] = element[headerIndex];
-                            })
-
-                            resultJson.push(object);
-                            if (records.length - 1 == resultJson.length) {
-                                var returnResponse = {};
-                                returnResponse.status = 200;
-                                Location.create(resultJson, function (err, locationResult) {
-                                    returnResponse.data = locationResult;
-                                    return context.res.status(200).send(returnResponse);
-                                });
-                            }
-                        }
-                    });
-                })
+                            headers = result[0];
+                            var index = 1;
+                         Project.insertData(result, index, context, next);
+                    })
             });
 
         }
         else {
             var error = new Error();
-                                    error.name = 'Bad Request'
-                                    error.status = 400;
-                                    error.message = 'Bad Request';
-                                    error.code = 'BAD REQUEST';
-                                    return next(error);
+            error.name = 'Bad Request'
+            error.status = 400;
+            error.message = 'Bad Request';
+            error.code = 'BAD REQUEST';
+            return next(error);
         }
     });
 
     //generate file
-    Location.beforeRemote('generate', function (context, mediaInstance, next) {
+    Project.beforeRemote('generate', function (context, mediaInstance, next) {
         var accessToken = appRoot.models.AccessToken;
 
         var roleMapping = appRoot.models.RoleMapping;
@@ -80,12 +121,10 @@ module.exports = function (Location) {
                     if (isValid) {
 
                         if (accessTokenRes.__data.userId) {
-                            Location.find(function (err, locationResult) {
+                            Project.find({ include: { relation: 'level', scope: { include: { relation: 'zone' } } } }, function(err, projectResult){
                                 var results = [];
-                                locationResult.forEach(function (element, index, array) {
+                                projectResult.forEach(function (element, index, array) {
                                     var object = element.__data;
-                                    object.locationId = object.id;
-                                    object.id = 1;
                                     results.push(object);
                                 })
                                 if (results.length == 0) {
@@ -98,7 +137,7 @@ module.exports = function (Location) {
 
                                 }
                                 else {
-                                    Location.generatePDFFile(results, accessTokenRes.__data.userId, context);
+                                    Project.generatePDFFile(results, accessTokenRes.__data.userId, context);
                                 }
                             });
                         }
@@ -124,7 +163,7 @@ module.exports = function (Location) {
     });
 
     //generate PDF file based on data
-    Location.generatePDFFile = function (generatedData, userId, context) {
+    Project.generatePDFFile = function (generatedData, userId, context) {
         var count = 0;
         //as a hader report
         var header = function (rpt, data) {
@@ -138,7 +177,7 @@ module.exports = function (Location) {
                 rpt.print(new Date().toString('MM/dd/yyyy'));
 
                 // Report Title
-                rpt.print('Location Report', { fontBold: true, fontSize: 16, align: 'right' });
+                rpt.print('Project Report', { fontBold: true, fontSize: 16, align: 'right' });
                 rpt.newline();
                 rpt.newline();
                 rpt.newline();
@@ -146,9 +185,9 @@ module.exports = function (Location) {
                 // Detail Header
                 rpt.fontBold();
                 rpt.band([
-                    { data: 'ID', width: 30 },
-                    { data: 'Location', width: 30 },
-                    { data: 'Project', width: 30 }
+                    { data: 'Project', width: 30 },
+                    { data: 'Level', width: 30 },
+                    { data: 'Zone', width: 30 }
                 ]);
                 rpt.fontNormal();
                 rpt.bandLine();
@@ -156,13 +195,18 @@ module.exports = function (Location) {
         };
 
         var detail = function (rpt, data) {
-            // Detail Body
+            data.level.forEach(function(element, index, array){
+                var zone = element.__data.zone;
+                zone.forEach(function(zoneElement, index, array){
             rpt.band([
-                { data: data.locationId, width: 200 },
-                { data: data.location, width: 200, align: 1 },
-                { data: data.project, width: 200 }
+                { data: data.project, width: 150 },
+                { data: element.level, width: 150, align: 10 },
+                { data: zoneElement.zone, width: 150 }
             ]
                 , { border: 1, width: 0 });
+                 
+            })   
+            })
         };
 
 
@@ -173,9 +217,20 @@ module.exports = function (Location) {
             });
         }
 
+ var footerFunction = function(Report) {
+        Report.line(Report.currentX(), Report.maxY()-18, Report.maxX(), Report.maxY()-18);
+        Report.pageNumber({footer: true, align: "right"});
+        Report.print("MITRAIS" ,{y: Report.maxY()-14,align: "center"});
+        Report.print("Printed: "+(new Date().toLocaleDateString()), {y: Report.maxY()-14, align: "left"});
+    };
+    
+     var headerFunction = function(Report) {
+        Report.print("Project List", {fontSize: 22, bold: true, underline:true, align: "center"});
+        Report.newLine(2);
+    };
         //generate unique ID
         var reportName = uuid.v1();
-        
+
         var rptName = 'storages/' + userId + '/report/' + reportName + '.pdf';
 
         var resultReport = new Report(rptName)
@@ -184,10 +239,11 @@ module.exports = function (Location) {
         // Settings
         resultReport
             .fontsize(9)
-            .margins(8)
+            .margins(50)
             .detail(detail)
-            .groupBy('id')
-            .header(header, { pageBreakBefore: true })
+            .pageHeader( headerFunction )  
+            .pageFooter(footerFunction)  
+            .header(header, { pageBreakBefore: false })
         ;
 
         resultReport.printStructure();
@@ -201,7 +257,7 @@ module.exports = function (Location) {
         });
     }
 
-    Location.remoteMethod(
+    Project.remoteMethod(
         'export',
         {
             description: 'export a file to web service',
@@ -212,7 +268,7 @@ module.exports = function (Location) {
         }
         );
 
-    Location.remoteMethod(
+    Project.remoteMethod(
         'generate',
         {
             description: 'generate PDF file',

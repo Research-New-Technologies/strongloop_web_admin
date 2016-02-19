@@ -14,8 +14,8 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Upload location from file </h3> 
-                    <i class="fa fa-info-circle" ng-click="goToInstruction()"></i> 
+                    <h3 class="box-title">Upload Project from file </h3>
+                    <i class="fa fa-info-circle" ng-click="goToInstruction()"></i>
                     <div class="form-inline" align="center">
                         <div class="form-group">
                             <input type="file" class="form-control" accept="*" placeholder="file" id="uploadFile" ng-model-instant onchange="angular.element(this).scope().uploadFile(this)"
@@ -32,19 +32,21 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Locations</h3>
+                    <h3 class="box-title">Projects</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
                         <tr>
-                            <th><a href="">ID</a></th>
-                            <th><a href="">Location</a></th>
                             <th><a href="">Project</a></th>
+                            <th><a href="">Level</a></th>
+                            <th><a href="">Zone</a></th>
                         </tr>
-                        <tr ng-repeat="location in locations">
-                            <td class="">{{location.id}}</td>
-                            <td class="">{{location.location}}</td>
-                            <td class="">{{location.project}}</td>
+                        <tr ng-repeat="project in results">
+                            <td class="">{{project.project}}</td>
+                            <td class="">{{project.level}}</td>
+                            <td class="">{{project.zone}}</td>
+
+
                         </tr>
                     </table>
                 </div>
