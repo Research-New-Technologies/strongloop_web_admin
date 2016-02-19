@@ -75,6 +75,11 @@ module.exports = function (Project) {
          }
     }
     
+    Project.beforeRemote('find', function(context, mediaInstance, next){
+         Project.find({ include: { relation: 'level', scope: { include: { relation: 'zone' } } } }, function(err, projectResult){
+            return context.res.status(200).send(projectResult);
+         });
+    })
     
     //upload file
     Project.beforeRemote('export', function (context, mediaInstance, next) {
