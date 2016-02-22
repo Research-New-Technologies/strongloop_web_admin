@@ -42,6 +42,8 @@ module.exports = function (user) {
         
         //when request body is acceptable
         else {
+            // we don't want to persist confirmPassword
+            delete context.req.body.confirmPassword
             
             //check whether there is a user with same email with request body email 
             user.find({ where: { 'email': context.req.body.email } }, function (err, userResults) {
